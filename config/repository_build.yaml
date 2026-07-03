@@ -1,0 +1,23 @@
+repository:
+  root: "E:/PrimeNet/Repository"
+
+range:
+  start: 1
+  end: 1000000000000
+
+big_batch:
+  size: 100000000000
+
+output_batch:
+  size: 10000000000
+
+build:
+  overwrite: true
+  skip_existing: false
+
+logging:
+  runtime_csv: "E:/PrimeNet/Repository/logs/builder_runtime.csv"
+  status_json: "E:/PrimeNet/Repository/logs/production_status.json"
+
+failure:
+  stop_on_failure: true

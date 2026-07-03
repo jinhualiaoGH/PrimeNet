@@ -1,0 +1,46 @@
+repository:
+  root: "E:\\PrimeNet\\Repository"
+
+generation:
+  # Number of integers processed per sieve segment.
+  # 50 million provides a good balance between memory usage and throughput.
+  segment_size: 50000000
+
+  # Size of one repository range (.npy file)
+  batch_size: 10000000000
+
+repository_limits:
+  start: 1
+  end: 1000000000000
+
+driver:
+  # Skip existing output files
+  skip_existing: false
+
+  # Rebuild existing files if they already exist
+  overwrite_existing: true
+
+  # Console progress reporting interval
+  progress_percent: 10
+
+quality_metrics:
+  enabled: true
+
+runtime:
+  log_csv: true
+
+  # Record unusually long batches
+  anomaly_threshold_minutes: 60
+
+inventory:
+  update_inventory: true
+  update_counts: true
+
+verification:
+  verify_after_build: true
+
+logging:
+  runtime_csv: "logs/builder_runtime.csv"
+  anomaly_csv: "logs/builder_anomalies.csv"
+  quality_metrics_json: "metadata/builder_quality_metrics.json"
+  quality_metrics_csv: "metadata/builder_quality_metrics.csv"
