@@ -1,0 +1,5 @@
+dataset_id,dataset_type,coordinate_expression,log_scale,source_path,notes
+baseline_1T,baseline_frequency,1_to_10^12,27.631021115928547,C:\PrimeNet_1T_Baseline_Analyzer\outputs\baseline_1T\gap_frequencies.csv,Complete 1T empirical baseline frequency spectrum
+huge_10e100_w100k,local_gaps,10^100,230.25850929940458,C:\PrimeNet_HugeN_Campaign\outputs\20260706_222139\gaps_found.csv,Huge-N 10^100 100k window
+huge_10e100_w1m,local_gaps,10^100,230.25850929940458,C:\PrimeNet_HugeN_Campaign\outputs\20260706_222143\gaps_found.csv,Huge-N 10^100 1M window
+huge_10e1000_w100k,local_gaps,10^1000,2302.585092994046,C:\PrimeNet_HugeN_Campaign\outputs\20260706_222223\gaps_found.csv,Huge-N 10^1000 100k window

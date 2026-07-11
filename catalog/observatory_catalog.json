@@ -1,0 +1,65 @@
+[
+  {
+    "folder": "entropy_rate",
+    "path": "C:\\PrimeNet\\observatories\\entropy_rate",
+    "observatory_id": "OBS-ENTROPY-RATE",
+    "name": "Entropy Rate Observatory",
+    "version": "1.0.0",
+    "category": "transition",
+    "description": "Observatory for entropy-rate analysis of prime-gap transition dynamics using transition matrices and stationary distributions.",
+    "status": "stable",
+    "observatory_class": "EntropyRateObservatory",
+    "supported_instruments": [
+      "EntropyRateInstrument"
+    ],
+    "products": [
+      "entropy_rate_summary.json",
+      "entropy_rate_state_contributions.csv",
+      "entropy_rate_transition_contributions.csv",
+      "entropy_rate_report.md"
+    ],
+    "dependencies": [
+      "INST-TRANSITION-MATRIX",
+      "INST-STATIONARY-DISTRIBUTION"
+    ]
+  },
+  {
+    "folder": "transition",
+    "path": "C:\\PrimeNet\\observatories\\transition",
+    "observatory_id": "OBS-TRANSITION",
+    "name": "Transition Observatory",
+    "version": "1.0.0",
+    "category": "transition",
+    "description": "Observatory for transition-based analysis of prime gap dynamics, including transition matrices, stationary distributions, entropy rate, spectral properties, mixing time, and related observables.",
+    "status": "stable",
+    "observatory_class": "TransitionObservatory",
+    "supported_instruments": [
+      "TransitionMatrixInstrument",
+      "StationaryDistributionInstrument",
+      "EntropyRateInstrument",
+      "SpectralGapInstrument",
+      "MixingTimeInstrument"
+    ],
+    "products": [
+      "transition_matrix.csv",
+      "transition_matrix_summary.json",
+      "stationary_distribution.csv",
+      "stationary_distribution_summary.json",
+      "entropy_rate_summary.json",
+      "entropy_rate_state_contributions.csv",
+      "entropy_rate_transition_contributions.csv",
+      "entropy_rate_report.md",
+      "spectral_gap_summary.json",
+      "spectral_eigenvalues.csv",
+      "mixing_time_summary.json",
+      "mixing_time_eigenvalues.csv"
+    ],
+    "dependencies": [
+      "TransitionMatrixInstrument",
+      "StationaryDistributionInstrument",
+      "EntropyRateInstrument",
+      "SpectralGapInstrument",
+      "MixingTimeInstrument"
+    ]
+  }
+]

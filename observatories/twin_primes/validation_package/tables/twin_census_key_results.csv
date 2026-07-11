@@ -1,0 +1,14 @@
+metric,value
+Numeric domain,"1 to 3,000,000,000,000"
+Gap files scanned,300
+Total gaps scanned,"108,340,298,703"
+Twin-prime events,"5,173,760,785"
+Global twin density,0.047754721437340
+First-partition density,0.060240693848188
+Final-partition density,0.045962623211875
+Highest partition density,0.060240693848188 (partition 1)
+Lowest partition density,0.045962623211875 (partition 300)
+Largest partition twin count,"27,412,679 (partition 1)"
+Smallest partition twin count,"15,998,935 (partition 300)"
+Observation runtime,47.833 min
+Validation status,PASSED

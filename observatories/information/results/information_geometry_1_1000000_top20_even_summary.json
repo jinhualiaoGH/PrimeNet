@@ -1,0 +1,72 @@
+{
+    "instrument": "information_geometry_observatory.py",
+    "instrument_id": "IO-003",
+    "observatory": "Information Observatory",
+    "version": "1.0.0",
+    "created_utc": "2026-06-25T04:02:33.354200+00:00",
+    "prime_file": "repository\\raw_primes\\primes_1_1000000.npy",
+    "start": 1,
+    "end": 1000000,
+    "prime_count": 78498,
+    "gap_count": 78497,
+    "gap_min": 1,
+    "gap_max": 114,
+    "gap_mean": 12.739098309489535,
+    "selected_state_count": 20,
+    "selected_states": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        40,
+        42
+    ],
+    "top_n": 20,
+    "max_gap": null,
+    "even_only": true,
+    "geometry_summary": {
+        "linear_information_law": {
+            "slope": 0.12312381788441838,
+            "intercept": 2.4392575460690127,
+            "r2": 0.9125847845535676,
+            "rmse": 0.45178296619427183,
+            "mae": 0.3859797692020257,
+            "max_abs_error": 0.7778423708754056
+        },
+        "residual_mean": 2.220446049250313e-15,
+        "residual_std": 0.45178296619427183,
+        "mean_abs_residual": 0.3859797692020257,
+        "max_abs_residual": 0.7778423708754056,
+        "max_abs_residual_gap": 32,
+        "max_curvature": 0.13742085879657728,
+        "max_curvature_gap": 30
+    },
+    "outputs": {
+        "geometry_csv": "observatories\\information_observatory\\results\\information_geometry_1_1000000_top20_even.csv",
+        "summary_json": "observatories\\information_observatory\\results\\information_geometry_1_1000000_top20_even_summary.json"
+    },
+    "runtime": {
+        "load_primes_seconds": 0.0012149810791015625,
+        "build_gaps_seconds": 0.00043702125549316406,
+        "geometry_seconds": 0.033391714096069336,
+        "total_seconds": 0.052797555923461914,
+        "total_minutes": 0.0008799592653910319
+    },
+    "python_version": "3.14.5 (tags/v3.14.5:5607950, May 10 2026, 10:43:50) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "numpy_version": "2.4.6"
+}

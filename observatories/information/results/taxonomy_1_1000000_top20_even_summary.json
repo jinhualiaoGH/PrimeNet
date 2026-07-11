@@ -1,0 +1,73 @@
+{
+    "instrument": "taxonomy_observatory.py",
+    "instrument_id": "IO-005",
+    "observatory": "Information Observatory",
+    "version": "1.0.0",
+    "created_utc": "2026-06-25T04:25:16.447407+00:00",
+    "start": 1,
+    "end": 1000000,
+    "top_n": 20,
+    "even_only": true,
+    "inputs": {
+        "geometry_csv": "observatories\\information_observatory\\results\\information_geometry_1_1000000_top20_even.csv",
+        "invariants_csv": "observatories\\information_observatory\\results\\invariants_1_1000000_top20_even.csv",
+        "stationary_csv": "observatories\\information_observatory\\results\\transition_1_1000000_top20_stationary.csv"
+    },
+    "taxonomy_summary": {
+        "gap_count": 20,
+        "taxonomy_counts": {
+            "Core Resonant Gap": 3,
+            "Core Hub Gap": 2,
+            "Common Structured Gap": 4,
+            "Geometric Outlier Gap": 2,
+            "Intermediate Gap": 3,
+            "Invariant-Structured Gap": 6
+        },
+        "frequency_classes": [
+            "Common",
+            "Core",
+            "Intermediate",
+            "Rare"
+        ],
+        "information_classes": [
+            "High Information",
+            "Low Information",
+            "Medium Information",
+            "Very High Information"
+        ],
+        "geometry_classes": [
+            "Curvature Peak; Negative Residual",
+            "Curvature Peak; Positive Residual",
+            "Extreme Residual; Negative Residual",
+            "Extreme Residual; Positive Residual",
+            "Linear; Positive Residual",
+            "Mild Residual; Negative Residual",
+            "Mild Residual; Positive Residual",
+            "Strong Residual; Negative Residual",
+            "Strong Residual; Positive Residual"
+        ],
+        "transition_classes": [
+            "Hub",
+            "Important",
+            "Intermediate",
+            "Peripheral"
+        ],
+        "invariant_classes": [
+            "High I4",
+            "Low I4",
+            "Moderate I4",
+            "Very High I4"
+        ]
+    },
+    "outputs": {
+        "taxonomy_csv": "observatories\\information_observatory\\results\\taxonomy_1_1000000_top20_even.csv",
+        "summary_json": "observatories\\information_observatory\\results\\taxonomy_1_1000000_top20_even_summary.json"
+    },
+    "runtime": {
+        "total_seconds": 0.04056286811828613,
+        "total_minutes": 0.0006760478019714356
+    },
+    "python_version": "3.14.5 (tags/v3.14.5:5607950, May 10 2026, 10:43:50) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "numpy_version": "2.4.6"
+}

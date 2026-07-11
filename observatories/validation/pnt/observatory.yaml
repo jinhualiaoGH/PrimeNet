@@ -1,0 +1,43 @@
+id: VO-002
+
+name: Prime Number Theorem Observatory
+
+category: validation
+
+version: 1.0.0
+
+status: active
+
+description: |
+  Validates the Prime Number Theorem using the PrimeNet logical
+  repository. Measures the convergence of π(x) toward x/log(x)
+  across the complete PrimeNet repository.
+
+entrypoint: observatories.validation.pnt.pnt_observatory
+
+author: PrimeNet
+
+tags:
+  - validation
+  - prime-number-theorem
+  - prime-counting
+  - asymptotic-analysis
+  - analytic-number-theory
+
+references:
+  - Jacques Hadamard (1896)
+  - Charles Jean de la Vallée Poussin (1896)
+
+products:
+  - pnt_checkpoints.csv
+  - pnt_summary.json
+  - product_manifest.json
+  - observatory_run_report.json
+
+inputs:
+  repository:
+    logical: true
+
+outputs:
+  category: validation
+  directory: vo-002

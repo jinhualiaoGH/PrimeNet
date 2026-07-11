@@ -1,0 +1,24 @@
+{
+  "job_id": "20260708_203236_primenet_2T_3T_full",
+  "name": "primenet_2T_3T_full",
+  "exit_code": 0,
+  "elapsed_wall_seconds": 17799.131870100002,
+  "child_cpu_seconds_final": 167.53125,
+  "cpu_wall_ratio_final": 0.00941232702935521,
+  "heartbeat_rows": 1778,
+  "heartbeat_gap_warnings": 0,
+  "max_wall_delta_seconds": 10.40723539999999,
+  "workdir": "C:\\PrimeNet\\Platform",
+  "command": [
+    "py",
+    "-m",
+    "core.drive_prime_repository"
+  ],
+  "run_dir": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full",
+  "summary": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full\\job_summary.json",
+  "stdout": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full\\stdout.log",
+  "stderr": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full\\stderr.log",
+  "heartbeat": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full\\heartbeat.csv",
+  "environment": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full\\environment.json",
+  "command_file": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full\\command.txt"
+}

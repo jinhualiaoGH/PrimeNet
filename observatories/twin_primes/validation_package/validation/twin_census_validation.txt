@@ -1,0 +1,36 @@
+PrimeNet Twin Prime Census 1-3T Validation
+================================================================
+Status: PASSED
+
+[PASS] partition_count
+  Expected: 300
+  Observed: 300
+[PASS] partition_sequence
+  Expected: 1..300
+  Observed: 1..300
+[PASS] numeric_range_contiguity
+  Expected: all adjacent ranges contiguous
+  Observed: contiguous
+[PASS] total_gap_count
+  Expected: 108340298703
+  Observed: 108340298703
+[PASS] total_twin_count
+  Expected: 5173760785
+  Observed: 5173760785
+[PASS] global_density
+  Expected: 0.04775472143734025
+  Observed: 0.04775472143734025
+[PASS] cumulative_counts
+  Expected: exact reconstruction
+  Observed: exact
+[PASS] density_fields
+  Expected: recomputed densities
+  Observed: match
+[PASS] summary_json_consistency
+  Expected: canonical totals/density
+  Observed: match
+
+Canonical result
+  Total gaps              : 108,340,298,703
+  Twin-prime events       : 5,173,760,785
+  Global twin density     : 0.047754721437340

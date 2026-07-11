@@ -1,0 +1,46 @@
+id: OBS-TRANSITION
+
+name: Transition Observatory
+
+version: 1.0.0
+
+category: transition
+
+description: >
+  Observatory for transition-based analysis of prime gap dynamics,
+  including transition matrices, stationary distributions,
+  entropy rate, spectral analysis, mixing time,
+  and related transition observables.
+
+observatory: TransitionObservatory
+
+products:
+
+  - transition_matrix.csv
+  - transition_matrix_summary.json
+
+  - stationary_distribution.csv
+  - stationary_distribution_summary.json
+
+  - entropy_rate_summary.json
+  - entropy_rate_state_contributions.csv
+  - entropy_rate_transition_contributions.csv
+  - entropy_rate_report.md
+
+  - spectral_gap_summary.json
+  - spectral_eigenvalues.csv
+
+  - mixing_time_summary.json
+  - mixing_time_eigenvalues.csv
+
+dependencies:
+
+  - TransitionMatrixInstrument
+  - StationaryDistributionInstrument
+  - EntropyRateInstrument
+  - SpectralGapInstrument
+  - MixingTimeInstrument
+
+author: PrimeNet
+
+status: stable

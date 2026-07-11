@@ -1,0 +1,78 @@
+{
+    "instrument": "entropy_observatory.py",
+    "instrument_id": "IO-001",
+    "observatory": "Information Observatory",
+    "version": "2.0.0",
+    "created_utc": "2026-06-25T03:51:47.941041+00:00",
+    "prime_file": "repository\\raw_primes\\primes_1_1000000.npy",
+    "start": 1,
+    "end": 1000000,
+    "gap": 6,
+    "prime_count": 78498,
+    "gap_summary": {
+        "gap_count": 78497,
+        "gap_min": 1,
+        "gap_max": 114,
+        "gap_mean": 12.739098309489535
+    },
+    "event_language_definition": "event[t] = 1 if prime_gap[t] == 6, else 0",
+    "event_file": "observatories\\information_observatory\\events\\events_gap_6_1_1000000.npy",
+    "max_order": 5,
+    "event_language_length": 78497,
+    "event_count": 13549,
+    "event_density": 0.17260532249640115,
+    "orders": {
+        "H0": {
+            "order": 0,
+            "entropy_bits": 0.6636300924487245,
+            "contexts": 1,
+            "information_gain_from_H0": 0.0,
+            "runtime_seconds": 0.0
+        },
+        "H1": {
+            "order": 1,
+            "entropy_bits": 0.6626327240732737,
+            "contexts": 2,
+            "information_gain_from_H0": 0.0009973683754508356,
+            "runtime_seconds": 0.02419447898864746
+        },
+        "H2": {
+            "order": 2,
+            "entropy_bits": 0.6622578906735417,
+            "contexts": 4,
+            "information_gain_from_H0": 0.0013722017751828242,
+            "runtime_seconds": 0.02540898323059082
+        },
+        "H3": {
+            "order": 3,
+            "entropy_bits": 0.6616520528015033,
+            "contexts": 8,
+            "information_gain_from_H0": 0.001978039647221208,
+            "runtime_seconds": 0.02397918701171875
+        },
+        "H4": {
+            "order": 4,
+            "entropy_bits": 0.661566079370429,
+            "contexts": 15,
+            "information_gain_from_H0": 0.0020640130782955124,
+            "runtime_seconds": 0.02443838119506836
+        },
+        "H5": {
+            "order": 5,
+            "entropy_bits": 0.6614629403676808,
+            "contexts": 29,
+            "information_gain_from_H0": 0.0021671520810436773,
+            "runtime_seconds": 0.02487039566040039
+        }
+    },
+    "runtime": {
+        "load_primes_seconds": 0.0012843608856201172,
+        "build_events_seconds": 0.0004661083221435547,
+        "entropy_seconds": 0.12323379516601562,
+        "total_seconds": 0.13133764266967773,
+        "total_minutes": 0.0021889607111612954
+    },
+    "python_version": "3.14.5 (tags/v3.14.5:5607950, May 10 2026, 10:43:50) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "numpy_version": "2.4.6"
+}

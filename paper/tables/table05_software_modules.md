@@ -1,0 +1,10 @@
+| Subsystem | Responsibility |
+| --- | --- |
+| Repository construction services | Deterministic generation of repository segments |
+| Repository management services | Inventory, catalogs, and lifecycle management |
+| Verification services | Independent repository validation |
+| Metadata services | Repository and product description |
+| Observatory execution framework | Run reusable computational investigations |
+| Product management | Preserve and organize persistent outputs |
+| Registry services | Discover observatories and products |
+| Publisher services | Generate publication figures, tables, manuscript drafts, and publication manifests |

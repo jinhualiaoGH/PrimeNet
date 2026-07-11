@@ -1,0 +1,12 @@
+{
+  "lab_root": "C:\\PrimeNet\\Lab",
+  "platform_root": "C:\\PrimeNet\\Platform",
+  "repository_root": "E:\\PrimeNet\\Repository",
+  "runtime_csv": "E:\\PrimeNet\\Repository\\logs\\builder_runtime.csv",
+  "reports_dir": "C:\\PrimeNet\\Lab\\reports",
+  "reruns_dir": "C:\\PrimeNet\\Lab\\reruns",
+  "python_executable": "py",
+  "builder_module": "core.build_prime_range",
+  "anomaly_threshold_minutes": 60.0,
+  "critical_threshold_minutes": 30.0
+}

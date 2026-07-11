@@ -1,0 +1,84 @@
+{
+  "project": "PrimeNet",
+  "package": "Twin Prime Census 1-3T Validation Package",
+  "package_version": "1.0.0",
+  "validation_status": "PASSED",
+  "generated_at_utc": "2026-07-10T10:26:00.315041+00:00",
+  "source_observation": {
+    "event_definition": "g(i) = 2",
+    "numeric_domain_start": 1,
+    "numeric_domain_end": 3000000000000,
+    "repository_status": "ACCEPTED",
+    "gap_files_scanned": 300
+  },
+  "canonical_results": {
+    "total_gaps": 108340298703,
+    "total_twin_prime_events": 5173760785,
+    "global_twin_density": 0.04775472143734025
+  },
+  "checks": [
+    {
+      "check": "partition_count",
+      "passed": true,
+      "expected": 300,
+      "observed": 300,
+      "details": ""
+    },
+    {
+      "check": "partition_sequence",
+      "passed": true,
+      "expected": "1..300",
+      "observed": "1..300",
+      "details": ""
+    },
+    {
+      "check": "numeric_range_contiguity",
+      "passed": true,
+      "expected": "all adjacent ranges contiguous",
+      "observed": "contiguous",
+      "details": ""
+    },
+    {
+      "check": "total_gap_count",
+      "passed": true,
+      "expected": 108340298703,
+      "observed": 108340298703,
+      "details": ""
+    },
+    {
+      "check": "total_twin_count",
+      "passed": true,
+      "expected": 5173760785,
+      "observed": 5173760785,
+      "details": ""
+    },
+    {
+      "check": "global_density",
+      "passed": true,
+      "expected": 0.04775472143734025,
+      "observed": 0.04775472143734025,
+      "details": ""
+    },
+    {
+      "check": "cumulative_counts",
+      "passed": true,
+      "expected": "exact reconstruction",
+      "observed": "exact",
+      "details": ""
+    },
+    {
+      "check": "density_fields",
+      "passed": true,
+      "expected": "recomputed densities",
+      "observed": "match",
+      "details": ""
+    },
+    {
+      "check": "summary_json_consistency",
+      "passed": true,
+      "expected": "canonical totals/density",
+      "observed": "match",
+      "details": ""
+    }
+  ]
+}

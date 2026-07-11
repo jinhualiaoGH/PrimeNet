@@ -1,0 +1,19 @@
+{
+  "project": "PrimeNet",
+  "script": "04_initialize_database.py",
+  "created_at": "2026-06-25T22:38:39",
+  "database_path": "C:\\PrimeNet\\catalog\\primenet_catalog.db",
+  "table_counts": {
+    "assets": 8,
+    "datasets": 2,
+    "instruments": 10,
+    "observations": 0,
+    "experiments": 0,
+    "atlases": 0,
+    "publications": 0,
+    "figures": 0,
+    "registry_manifest": 8
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python_version": "3.14.5"
+}

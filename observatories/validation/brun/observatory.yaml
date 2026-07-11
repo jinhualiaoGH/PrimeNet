@@ -1,0 +1,49 @@
+id: VO-001
+
+name: Brun Constant Observatory
+
+category: validation
+
+version: "1.0.0"
+
+status: active
+
+description: >
+  Validation observatory for measuring partial Brun sums from PrimeNet prime
+  repositories and comparing interval contributions with the known Brun constant.
+
+mathematical_object:
+  name: Brun constant
+  reference_value: 1.902160583104
+  formula: "sum over twin primes (p, p+2) of 1/p + 1/(p+2)"
+
+inputs:
+  primary:
+    - repository/raw/primes
+    - external prime range directories via --prime-dir
+
+outputs:
+  results:
+    - products/results/validation/brun/brun_constant_checkpoints.csv
+    - products/results/validation/brun/brun_constant_summary.json
+
+script:
+  path: observatories/validation/brun/brun_constant_test.py
+  entrypoint: "py -m observatories.validation.brun.brun_constant_test"
+
+provenance:
+  created_by: PrimeNet
+  created_for: Validation Observatory Program
+  first_tested_on: "2026-06-26"
+
+tags:
+  - brun_constant
+  - twin_primes
+  - validation
+  - prime_repository
+  - tail_contribution
+
+notes: >
+  The first successful PrimeNet Brun test measured the contribution from the
+  100B to 200B prime interval, producing a partial tail contribution of about
+  0.002777130737618 from 3,889,050,246 primes and 199,708,605 twin-prime pairs.

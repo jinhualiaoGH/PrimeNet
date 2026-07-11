@@ -1,0 +1,119 @@
+{
+  "generated_batches": 103,
+  "average_runtime_minutes": 5.623762126213592,
+  "median_runtime_minutes": 2.98573,
+  "min_runtime_minutes": 0.003024,
+  "max_runtime_minutes": 125.731757,
+  "slowest": {
+    "batch_start": 180000000001,
+    "batch_end": 190000000000,
+    "runtime_minutes": 125.731757,
+    "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_180000000001_190000000000.npy"
+  },
+  "top_slowest": [
+    {
+      "rank": 1,
+      "batch_start": 180000000001,
+      "batch_end": 190000000000,
+      "runtime_minutes": 125.731757,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_180000000001_190000000000.npy"
+    },
+    {
+      "rank": 2,
+      "batch_start": 130000000001,
+      "batch_end": 140000000000,
+      "runtime_minutes": 51.159366,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_130000000001_140000000000.npy"
+    },
+    {
+      "rank": 3,
+      "batch_start": 90000000001,
+      "batch_end": 100000000000,
+      "runtime_minutes": 46.227986,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_90000000001_100000000000.npy"
+    },
+    {
+      "rank": 4,
+      "batch_start": 660000000001,
+      "batch_end": 670000000000,
+      "runtime_minutes": 43.12287,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_660000000001_670000000000.npy"
+    },
+    {
+      "rank": 5,
+      "batch_start": 390000000001,
+      "batch_end": 400000000000,
+      "runtime_minutes": 12.186622,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_390000000001_400000000000.npy"
+    },
+    {
+      "rank": 6,
+      "batch_start": 570000000001,
+      "batch_end": 580000000000,
+      "runtime_minutes": 4.654855,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_570000000001_580000000000.npy"
+    },
+    {
+      "rank": 7,
+      "batch_start": 760000000001,
+      "batch_end": 770000000000,
+      "runtime_minutes": 4.248609,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_760000000001_770000000000.npy"
+    },
+    {
+      "rank": 8,
+      "batch_start": 850000000001,
+      "batch_end": 860000000000,
+      "runtime_minutes": 4.228072,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_850000000001_860000000000.npy"
+    },
+    {
+      "rank": 9,
+      "batch_start": 770000000001,
+      "batch_end": 780000000000,
+      "runtime_minutes": 4.223864,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_770000000001_780000000000.npy"
+    },
+    {
+      "rank": 10,
+      "batch_start": 280000000001,
+      "batch_end": 290000000000,
+      "runtime_minutes": 4.21946,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_280000000001_290000000000.npy"
+    }
+  ],
+  "over_critical_threshold": [
+    {
+      "batch_start": 180000000001,
+      "batch_end": 190000000000,
+      "runtime_minutes": 125.731757,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_180000000001_190000000000.npy"
+    },
+    {
+      "batch_start": 130000000001,
+      "batch_end": 140000000000,
+      "runtime_minutes": 51.159366,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_130000000001_140000000000.npy"
+    },
+    {
+      "batch_start": 90000000001,
+      "batch_end": 100000000000,
+      "runtime_minutes": 46.227986,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_90000000001_100000000000.npy"
+    },
+    {
+      "batch_start": 660000000001,
+      "batch_end": 670000000000,
+      "runtime_minutes": 43.12287,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_660000000001_670000000000.npy"
+    }
+  ],
+  "over_anomaly_threshold": [
+    {
+      "batch_start": 180000000001,
+      "batch_end": 190000000000,
+      "runtime_minutes": 125.731757,
+      "output_file": "E:\\PrimeNet\\Repository\\ranges\\primes_180000000001_190000000000.npy"
+    }
+  ]
+}

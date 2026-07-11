@@ -1,0 +1,11 @@
+instrument_id,name,version,description,script_path,status
+OBS001,Entropy Observatory,1.0,Measures entropy of prime event languages,observatories/entropy,active
+OBS002,Transition Observatory,1.0,Measures transition structure between arithmetic states,observatories/transition,active
+OBS003,Invariant Observatory,1.0,Searches for stable information invariants,observatories/invariant,active
+OBS004,Runtime Observatory,1.0,Tracks runtime and computational scaling,observatories/runtime,active
+OBS005,Taxonomy Observatory,1.0,Classifies gap and event information families,observatories/taxonomy,active
+OBS006,Geometry Observatory,1.0,Studies information geometry of prime structures,observatories/geometry,active
+OBS007,Spectrum Observatory,1.0,Analyzes gap/event spectra across arithmetic states,observatories/spectrum,active
+OBS008,Validation Observatory,1.0,Runs validation and counterexample searches,observatories/validation,active
+OBS009,Compression Observatory,1.0,Measures compressibility and predictive structure,observatories/compression,active
+OBS010,Flow Observatory,1.0,Studies directed flow among gap states,observatories/flow,active

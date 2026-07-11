@@ -1,0 +1,65 @@
+project:
+  id: PRIMENET
+  name: PrimeNet
+  version: "1.0.0"
+  description: "An Observatory for Prime Information Structures"
+
+paths:
+  repository: repository
+  catalog: catalog
+  core: core
+  observatories: observatories
+  products: products
+  atlases: products/atlases
+  papers: products/papers
+  releases: products/releases
+  figures: products/figures
+  results: products/results
+  logs: logs
+  docs: docs
+  scripts: scripts
+
+database:
+  catalog: catalog/primenet_catalog.db
+
+repository:
+  prime_sources:
+    - D:/PrimeNet_Repository_1_100B/ranges
+    - C:/Prime_Distribution_Project/prime_repository/ranges
+
+  gap_repository: repository/raw/gaps
+  event_repository: repository/raw/events
+  processed_repository: repository/processed
+  metadata_repository: repository/metadata
+
+runtime:
+  max_workers: auto
+  temporary_directory: tmp
+  cache_directory: cache
+
+logging:
+  enabled: true
+  level: INFO
+  console: true
+  file: true
+  directory: logs
+
+observatories:
+  auto_register: true
+  save_runtime_statistics: true
+
+products:
+  generate_figures: true
+  generate_catalog_entries: true
+  update_manifest: true
+
+metadata:
+  organization: PrimeNet
+  author: PrimeNet Project
+  license: MIT
+  created: 2026
+  citation_required: true
+  preserve_provenance: true
+
+validation:
+  brun_reference: 1.902160583104

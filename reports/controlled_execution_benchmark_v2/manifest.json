@@ -1,0 +1,8 @@
+﻿{
+    "output_dir":  "C:\\PrimeNet\\reports\\controlled_execution_benchmark_v2",
+    "principle":  "Observe the primes. Measure the computation. Validate the evidence. Trust the result.",
+    "created_at":  "2026-07-09T02:19:35",
+    "package":  "PrimeNet Controlled Execution Benchmark Report v2",
+    "campaign":  "2T to 3T",
+    "source_run":  "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full"
+}

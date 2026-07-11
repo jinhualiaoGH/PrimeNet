@@ -1,0 +1,55 @@
+def section_paragraphs(stats):
+    return [
+        {"title":"1. Introduction","figure":"fig01_evolution","paragraphs":[
+            "Computational methods have become an indispensable component of modern scientific research. Across disciplines, large-scale computational investigations increasingly generate data products, software artifacts, metadata, and derived observations that must be organized if they are to remain useful after the original computation has completed.",
+            "Computational arithmetic presents a similar engineering challenge. Researchers may repeatedly generate prime data, verify files, write analysis scripts, and preserve outputs in project-specific formats. PrimeNet was developed to reduce this duplication by organizing computational arithmetic as persistent scientific infrastructure.",
+            "The purpose of this paper is to document the PrimeNet reference architecture. The contribution is architectural rather than mathematical: PrimeNet provides an implemented framework for deterministic repository construction, canonical observational coordinates, reusable observatories, persistent products, and publication support." ]},
+        {"title":"2. Design Philosophy","table":"table02_design_principles","paragraphs":[
+            "PrimeNet was not designed all at once. Its architectural principles emerged through the practical engineering process of building, verifying, organizing, and reusing large-scale prime computation. The resulting design favors stable interfaces, separation of responsibilities, deterministic construction, and reusable scientific products.",
+            "A central principle is observation before explanation. PrimeNet does not require a specific conjecture or theoretical model before computation can begin. Instead, it provides a systematic environment in which observations can be generated, recorded, compared, and reused.",
+            "The architecture also treats reproducibility as a structural requirement. Verification, metadata, sessions, registries, and publication manifests are not optional decorations; they are part of the system design." ]},
+        {"title":"3. Prime Space","figure":"fig03_prime_space","paragraphs":[
+            "Prime Space is the canonical coordinate system used by PrimeNet. Instead of treating prime numbers only as numerical values, PrimeNet records observations using the prime index together with the prime value. This gives each observed prime a stable coordinate within the ordered sequence of primes.",
+            "The prime index is important because many observational products concern relationships between successive primes, prime gaps, fixed-gap languages, transition structures, and other sequence-based phenomena. Using a canonical coordinate system makes these products easier to compare and reproduce.",
+            "Prime Space therefore acts as an organizing layer between raw arithmetic computation and higher-level observation. It is the coordinate foundation upon which repositories, observatories, and products can agree." ]},
+        {"title":"4. Repository Architecture","figure":"fig04_repository","table":"table04_repository_statistics","paragraphs":[
+            "The Repository is the persistent computational foundation of PrimeNet. It stores verified computational assets in a form that can be reused by observatories and future investigations without regenerating the same data repeatedly.",
+            "The reference implementation covers the interval {repository_interval}, contains {verified_prime_numbers} verified prime numbers, and is organized into {repository_segments} independently verified repository segments. These values serve as architectural evidence that the repository model has been realized at substantial scale.",
+            "Repository services separate access, metadata, verification, and persistent storage. This separation allows the repository to remain stable while services and observatories evolve above it." ]},
+        {"title":"5. Repository Construction and Verification","figure":"fig05_construction","paragraphs":[
+            "Repository construction proceeds through deterministic segmentation, prime generation, segment persistence, and independent verification. Each segment becomes part of the persistent repository only after passing verification.",
+            "This workflow is intentionally conservative. The goal is not merely to compute primes, but to create computational assets that can be trusted and reused. A verified segment is treated as a persistent scientific resource rather than a temporary output file.",
+            "The construction and verification model also supports incremental growth. New ranges can be appended while previously verified segments remain stable." ]},
+        {"title":"6. Observatory Framework","figure":"fig06_observatory","table":"table03_architectural_components","paragraphs":[
+            "The Observatory Framework defines how scientific investigations are performed in PrimeNet. An observatory operates on repository assets, records an observation session, generates computational products, and may contribute to an atlas.",
+            "This structure separates persistent computational data from observational logic. New observatories can be added without changing the repository, and existing products can be reused by future observatories.",
+            "Observation Sessions preserve execution context and provenance. Products are therefore not isolated files but traceable outputs of a defined computational process." ]},
+        {"title":"7. Products and Atlases","paragraphs":[
+            "Products are persistent outputs generated by observatories. They may include tables, summaries, transition data, entropy measurements, figures, manifests, or other structured computational artifacts.",
+            "Atlases organize related products into reusable scientific collections. The atlas concept reflects the view that computational observations should accumulate over time instead of disappearing after individual experiments.",
+            "Products and atlases are essential to PrimeNet because they convert computational work into reusable scientific memory." ]},
+        {"title":"8. Software Architecture","figure":"fig07_software","table":"table05_software_modules","paragraphs":[
+            "PrimeNet is implemented as a modular software system. Repository services, metadata services, product services, observatory execution, and publication support are separated into distinct responsibilities.",
+            "This modularity is important for long-term maintainability. A new observatory should not need to reimplement repository access, metadata recording, product organization, or publication formatting.",
+            "The software architecture follows a simple rule: each subsystem should reduce the manual work required by the next subsystem." ]},
+        {"title":"9. Reproducibility and Publication Support","table":"table06_reproducibility_features","paragraphs":[
+            "Reproducibility in PrimeNet is supported by deterministic construction, independent verification, structured metadata, observation sessions, persistent products, registries, and publication manifests.",
+            "PrimeNet Publisher extends the reproducibility principle into scientific communication. It generates figures, tables, manuscript scaffolds, review reports, and publication manifests from structured sources.",
+            "The publication system is included not as a convenience feature, but as part of the same engineering philosophy: computational knowledge should remain synchronized with the way it is communicated." ]},
+        {"title":"10. Architectural Validation","figure":"fig08_validation","paragraphs":[
+            "Architectural validation in this paper does not mean proving a theorem about primes. It means demonstrating that the proposed architecture has been implemented and exercised at meaningful scale.",
+            "The repository interval, number of verified primes, number of repository segments, verification status, and largest stored prime are used as evidence that the architecture is concrete rather than aspirational.",
+            "These implementation statistics should therefore be read as engineering evidence. They support the claim that PrimeNet is an implemented infrastructure for computational arithmetic." ]},
+        {"title":"11. Discussion","figure":"fig09_growth","paragraphs":[
+            "PrimeNet changes the role of computation in prime arithmetic from isolated calculation toward persistent infrastructure. The repository preserves computational assets, observatories preserve methods of investigation, products preserve results, and the Publisher preserves communication artifacts.",
+            "The architecture does not attempt to solve open problems in prime arithmetic. Instead, it attempts to make future computational investigations easier to perform, easier to reproduce, and easier to build upon.",
+            "This distinction is central to the paper. PrimeNet is not presented as a new theory of primes, but as an engineered foundation for observational computational arithmetic." ]},
+        {"title":"12. Future Directions","figure":"fig10_ecosystem","paragraphs":[
+            "Future development may extend the repository, add new observatories, enrich product formats, build additional atlases, and improve publication workflows. These extensions do not require changing the core architectural idea.",
+            "A natural long-term goal is community extension. If future researchers can add observatories, reuse repository assets, and publish reproducible computational products with less duplicated engineering effort, then PrimeNet will have achieved its intended purpose.",
+            "The value of scientific infrastructure is ultimately measured not by the infrastructure itself, but by the investigations it enables." ]},
+        {"title":"13. Conclusion","paragraphs":[
+            "PrimeNet is a reference architecture for persistent computational arithmetic. It organizes Prime Space, a verified repository, observatories, observation sessions, products, atlases, registries, and publication support into a unified system for reproducible computational investigation.",
+            "The reference implementation demonstrates the architecture through a repository covering {repository_interval}, containing {verified_prime_numbers} verified prime numbers, and passing repository verification across {repository_segments} segments.",
+            "The primary contribution of PrimeNet is not a new prime algorithm or mathematical theorem. It is an implemented architecture intended to help future researchers spend less time rebuilding computational infrastructure and more time doing science." ]},
+    ]

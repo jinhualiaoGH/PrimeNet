@@ -1,0 +1,19 @@
+{
+  "repository": "E:\\PrimeNet\\Repository\\gaps_u16_v3",
+  "acceptance_status": "ACCEPTED",
+  "prime_files": 300,
+  "gap_files": 300,
+  "manifest_rows": 300,
+  "files_passed": 300,
+  "total_primes": 108340298703,
+  "total_gaps": 108340298703,
+  "local_gaps_verified": 108340298403,
+  "ordinary_boundaries_verified": 299,
+  "terminal_boundaries_verified": 1,
+  "warnings": 0,
+  "errors": 0,
+  "terminal_next_prime": 3000000000013,
+  "terminal_gap": 80,
+  "audit_runtime_minutes": 200.947,
+  "contract": "For every stored prime index i, g(i) = p(i + 1) - p(i)."
+}

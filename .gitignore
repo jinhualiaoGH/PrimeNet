@@ -1,0 +1,96 @@
+# -----------------------------------------------------------------------------
+# PrimeNet Git exclusions
+# -----------------------------------------------------------------------------
+
+# Python generated artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Virtual environments and local environments
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+
+# IDE and operating-system artifacts
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+~$*
+*.lock
+
+# Logs and controlled-run execution artifacts
+logs/
+runs/
+
+# Large or generated repository data
+Platform/repository/ranges/
+*.npy
+*.npz
+*.memmap
+
+# Laboratory outputs and rerun evidence
+Lab/outputs/
+Lab/reruns/
+Lab/scripts/outputs/
+
+# Generated scientific products
+products/results/
+
+# Generated paper outputs and build logs
+paper/output/
+paper/build_logs/
+paper/publisher/__pycache__/
+
+# Generated reports: keep accepted architecture and controlled-execution evidence
+reports/*
+!reports/architecture_acceptance/
+!reports/architecture_acceptance/**
+!reports/controlled_execution_benchmark_v2/
+!reports/controlled_execution_benchmark_v2/**
+
+# Generated catalog database; keep portable CSV/JSON catalog files
+catalog/*.db
+catalog/*.sqlite
+catalog/*.sqlite3
+
+# Local or machine-specific configuration
+*.local.yaml
+*.local.yml
+*.local.json
+
+# Historical source archives are preserved in external accepted backups,
+# not in the active GitHub source release.
+archive/
+Platform/archive/
+
+# Common large document intermediates
+paper/**/*.aux
+paper/**/*.log
+paper/**/*.out
+paper/**/*.toc
+paper/**/*.synctex.gz
+
+# Packaged archives
+*.zip
+
+# Packaged archives
+*.zip

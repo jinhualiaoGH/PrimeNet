@@ -1,0 +1,30 @@
+{
+  "project": "PrimeNet",
+  "script": "02_discover_repository.py",
+  "created_at": "2026-06-25T22:26:41",
+  "repository_path": "C:\\PrimeNet\\repository",
+  "total_files": 8,
+  "total_size_bytes": 635928,
+  "total_size_gb": 0.000592,
+  "by_category": {
+    "audit_metadata_file": 2,
+    "checksum_metadata_file": 2,
+    "index_metadata_file": 2,
+    "json_metadata_file": 1,
+    "prime_array_file": 1
+  },
+  "by_dataset_role": {
+    "audit_metadata": 2,
+    "checksum_metadata": 2,
+    "index_metadata": 2,
+    "prime_numbers": 2
+  },
+  "by_extension": {
+    ".csv": 3,
+    ".json": 4,
+    ".npy": 1
+  },
+  "sha256_computed": false,
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python_version": "3.14.5"
+}

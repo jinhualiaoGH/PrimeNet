@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-07-08T20:32:36",
+  "python_version": "3.14.5 (tags/v3.14.5:5607950, May 10 2026, 10:43:50) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 140 Stepping 2, GenuineIntel",
+  "working_directory": "C:\\PrimeNet\\Platform",
+  "command": [
+    "py",
+    "-m",
+    "core.drive_prime_repository"
+  ],
+  "stay_awake_result": true,
+  "cpu_count_logical": 8,
+  "cpu_count_physical": 4,
+  "memory_total_bytes": 16905961472,
+  "memory_available_bytes": 6847692800,
+  "battery": {
+    "percent": 100,
+    "power_plugged": true,
+    "secsleft": -2
+  }
+}

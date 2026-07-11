@@ -1,0 +1,29 @@
+id: OBS-ENTROPY-RATE
+
+name: Entropy Rate Observatory
+
+version: 1.0.0
+
+category: transition
+
+description: >
+  Computes the entropy rate of the PrimeNet transition process
+  using the stationary distribution and transition matrix.
+
+observatory: EntropyRateObservatory
+
+products:
+
+  - entropy_rate_summary.json
+  - entropy_rate_state_contributions.csv
+  - entropy_rate_transition_contributions.csv
+  - entropy_rate_report.md
+
+dependencies:
+
+  - INST-TRANSITION-MATRIX
+  - INST-STATIONARY-DISTRIBUTION
+
+author: PrimeNet
+
+status: stable

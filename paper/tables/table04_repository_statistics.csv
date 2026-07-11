@@ -1,0 +1,7 @@
+Metric,Value
+Repository interval,1 <= n <= 10^12
+Verified primes,"37,607,912,018"
+Largest stored prime,"999,999,999,989"
+Repository segments,100
+Segment size,10^10 integers
+Verification result,100/100 passed

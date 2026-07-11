@@ -1,0 +1,127 @@
+{
+  "analysis": "PrimeNet Controlled Execution Benchmark Analysis v2",
+  "run_dir": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full",
+  "stdout_path": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full\\stdout.log",
+  "job_summary_path": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full\\job_summary.json",
+  "heartbeat_path": "C:\\PrimeNet\\runs\\20260708_203236_primenet_2T_3T_full\\heartbeat.csv",
+  "campaign": {
+    "batches_completed": 100,
+    "range_start": 2000000000001,
+    "range_end": 3000000000000,
+    "total_runtime_minutes": 295.07095,
+    "total_runtime_hours": 4.917849166666667,
+    "total_primes": 35038402564,
+    "mean_prime_count_per_batch": 350384025.64,
+    "total_output_size_gb": 261.05645499999997,
+    "verified_batches": 100,
+    "mean_minutes_per_10B": 2.9507095,
+    "projected_hours_per_1T_at_mean": 4.917849166666667
+  },
+  "batch_runtime_minutes": {
+    "count": 100,
+    "mean": 2.9507095,
+    "median": 2.8953499999999996,
+    "std": 0.2544148044715861,
+    "min": 2.634666666666667,
+    "p05": 2.662004166666667,
+    "p25": 2.77325,
+    "p75": 3.0732541666666666,
+    "p95": 3.388243333333333,
+    "max": 4.1448833333333335,
+    "iqr": 0.3000041666666666,
+    "cv": 0.08622156958236184
+  },
+  "generate_minutes": {
+    "count": 100,
+    "mean": 2.3152013333333334,
+    "median": 2.264875,
+    "std": 0.2090074782475783,
+    "min": 2.0358666666666667,
+    "p05": 2.0744733333333336,
+    "p25": 2.1632875,
+    "p75": 2.4544500000000005,
+    "p95": 2.7068149999999997,
+    "max": 3.0458,
+    "iqr": 0.29116250000000043,
+    "cv": 0.09027615665142079
+  },
+  "save_minutes": {
+    "count": 100,
+    "mean": 0.6028511666666666,
+    "median": 0.6075083333333333,
+    "std": 0.02552733292882425,
+    "min": 0.5186333333333333,
+    "p05": 0.5432158333333333,
+    "p25": 0.5931416666666667,
+    "p75": 0.6189791666666666,
+    "p95": 0.6332083333333334,
+    "max": 0.6386166666666667,
+    "iqr": 0.025837499999999958,
+    "cv": 0.04234433694467582
+  },
+  "verify_minutes": {
+    "count": 100,
+    "mean": 0.03265733333333334,
+    "median": 0.0161,
+    "std": 0.08294279154008743,
+    "min": 0.01355,
+    "p05": 0.014164166666666665,
+    "p25": 0.0151375,
+    "p75": 0.0177,
+    "p95": 0.03392833333333331,
+    "max": 0.5416833333333333,
+    "iqr": 0.0025625000000000005,
+    "cv": 2.539790701631714
+  },
+  "prime_count_per_batch": {
+    "count": 100,
+    "mean": 350384025.64,
+    "median": 350293295.5,
+    "std": 1439227.170401339,
+    "min": 348085768.0,
+    "p05": 348299643.6,
+    "p25": 349148541.5,
+    "p75": 351586028.75,
+    "p95": 352722067.45,
+    "max": 353034663.0,
+    "iqr": 2437487.25,
+    "cv": 0.004107570736915
+  },
+  "runtime_trend": {
+    "slope_per_batch": 0.001817753875387535,
+    "intercept": 2.8589129292929294,
+    "r2": 0.042966059675532686,
+    "delta_over_campaign": 0.17995763366336598
+  },
+  "outlier_rule": {
+    "method": "Q3 + 1.5*IQR",
+    "threshold_minutes": 3.5232604166666666,
+    "outlier_count": 3
+  },
+  "job_summary": {
+    "job_id": "20260708_203236_primenet_2T_3T_full",
+    "exit_code": 0,
+    "elapsed_wall_seconds": 17799.131870100002,
+    "elapsed_wall_minutes": 296.65219783500004,
+    "heartbeat_rows": 1778,
+    "heartbeat_gap_warnings": 0,
+    "max_wall_delta_seconds": 10.40723539999999
+  },
+  "heartbeat": {
+    "available": true,
+    "rows": 1778,
+    "max_wall_delta_seconds": 10.407236000000921,
+    "mean_wall_delta_seconds": 10.016206455824422,
+    "p95_wall_delta_seconds": 10.02416280000034,
+    "heartbeat_gap_warnings": 0
+  },
+  "figures": {
+    "runtime_sequence_v2": "C:\\PrimeNet\\reports\\controlled_execution_benchmark_v2\\analysis_outputs\\figures\\runtime_sequence_v2.png",
+    "runtime_distribution_v2": "C:\\PrimeNet\\reports\\controlled_execution_benchmark_v2\\analysis_outputs\\figures\\runtime_distribution_v2.png",
+    "runtime_components_sequence_v2": "C:\\PrimeNet\\reports\\controlled_execution_benchmark_v2\\analysis_outputs\\figures\\runtime_components_sequence_v2.png",
+    "runtime_components_mean_v2": "C:\\PrimeNet\\reports\\controlled_execution_benchmark_v2\\analysis_outputs\\figures\\runtime_components_mean_v2.png",
+    "prime_count_sequence_v2": "C:\\PrimeNet\\reports\\controlled_execution_benchmark_v2\\analysis_outputs\\figures\\prime_count_sequence_v2.png",
+    "heartbeat_interval_v2": "C:\\PrimeNet\\reports\\controlled_execution_benchmark_v2\\analysis_outputs\\figures\\heartbeat_interval_v2.png",
+    "correlation_matrix_v2": "C:\\PrimeNet\\reports\\controlled_execution_benchmark_v2\\analysis_outputs\\figures\\correlation_matrix_v2.png"
+  }
+}

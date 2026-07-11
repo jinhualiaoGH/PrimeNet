@@ -1,0 +1,16 @@
+{
+  "project": "PrimeNet",
+  "script": "03_register_assets.py",
+  "created_at": "2026-06-25T22:31:22",
+  "total_assets": 8,
+  "total_size_bytes": 635928,
+  "total_size_gb": 0.000592,
+  "by_asset_type": {
+    "dataset_prime_numbers": 2,
+    "metadata_audit": 2,
+    "metadata_checksum": 2,
+    "metadata_index": 2
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python_version": "3.14.5"
+}

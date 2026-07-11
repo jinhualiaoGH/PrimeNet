@@ -1,0 +1,76 @@
+{
+  "project": "PrimeNet",
+  "title": "PrimeNet: An Observatory for Prime Information Structures",
+  "version": "1.0.0",
+  "created_at": "2026-06-25T22:13:23",
+  "root": "C:\\PrimeNet",
+  "python_version": "3.14.5",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "architecture": {
+    "repository": "Prime Repository",
+    "observatories": "Scientific instruments",
+    "atlases": "Aggregated information products",
+    "catalog": "Observation and instrument registry",
+    "papers": "Research outputs"
+  },
+  "motto": "Observe. Measure. Validate. Explore.",
+  "last_updated_at": "2026-06-25T22:38:39",
+  "repository_discovery": {
+    "last_discovered_at": "2026-06-25T22:26:41",
+    "inventory_csv": "catalog/repository_inventory.csv",
+    "inventory_json": "catalog/repository_inventory.json",
+    "summary_json": "catalog/repository_summary.json",
+    "total_files": 8,
+    "total_size_gb": 0.000592,
+    "sha256_computed": false
+  },
+  "setup_history": [
+    {
+      "timestamp": "2026-06-25T22:26:41",
+      "script": "02_discover_repository.py",
+      "action": "discover_repository",
+      "status": "completed",
+      "total_files": 8,
+      "total_size_gb": 0.000592
+    },
+    {
+      "timestamp": "2026-06-25T22:31:23",
+      "script": "03_register_assets.py",
+      "action": "register_assets",
+      "status": "completed",
+      "total_assets": 8,
+      "total_size_gb": 0.000592
+    },
+    {
+      "timestamp": "2026-06-25T22:38:39",
+      "script": "04_initialize_database.py",
+      "action": "initialize_database",
+      "status": "completed",
+      "database": "catalog/primenet_catalog.db"
+    }
+  ],
+  "asset_registry": {
+    "last_registered_at": "2026-06-25T22:31:22",
+    "asset_registry_csv": "catalog/asset_registry.csv",
+    "asset_registry_json": "catalog/asset_registry.json",
+    "asset_summary_json": "catalog/asset_summary.json",
+    "total_assets": 8,
+    "total_size_gb": 0.000592
+  },
+  "database": {
+    "path": "catalog/primenet_catalog.db",
+    "summary": "catalog/database_summary.json",
+    "last_initialized_at": "2026-06-25T22:38:39",
+    "table_counts": {
+      "assets": 8,
+      "datasets": 2,
+      "instruments": 10,
+      "observations": 0,
+      "experiments": 0,
+      "atlases": 0,
+      "publications": 0,
+      "figures": 0,
+      "registry_manifest": 8
+    }
+  }
+}

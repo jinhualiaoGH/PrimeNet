@@ -1,0 +1,129 @@
+{
+    "instrument": "invariant_observatory.py",
+    "instrument_id": "IO-004",
+    "observatory": "Information Observatory",
+    "version": "1.0.0",
+    "created_utc": "2026-06-25T04:13:55.305482+00:00",
+    "prime_file": "repository\\raw_primes\\primes_1_1000000.npy",
+    "start": 1,
+    "end": 1000000,
+    "prime_count": 78498,
+    "gap_count": 78497,
+    "gap_min": 1,
+    "gap_max": 114,
+    "gap_mean": 12.739098309489535,
+    "selected_state_count": 20,
+    "selected_states": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        40,
+        42
+    ],
+    "top_n": 20,
+    "max_gap": null,
+    "even_only": true,
+    "invariant_summary": {
+        "linear_information_law": {
+            "slope": 0.12312381788441838,
+            "intercept": 2.4392575460690127,
+            "r2": 0.9125847845535676,
+            "rmse": 0.45178296619427183,
+            "mae": 0.3859797692020257,
+            "max_abs_error": 0.7778423708754056
+        },
+        "candidate_invariant_summary": {
+            "I1_density_entropy_ratio": {
+                "mean": 0.06786433703165112,
+                "std": 0.06604276276730295,
+                "min": 0.006433233067047604,
+                "max": 0.2618437109881881,
+                "coefficient_of_variation": 0.9731585933934842,
+                "sample_size": 20
+            },
+            "I2_gap_probability_product": {
+                "mean": 0.5854503993783201,
+                "std": 0.30733822656195187,
+                "min": 0.2081353427519523,
+                "max": 1.223741034689224,
+                "coefficient_of_variation": 0.5249603158325781,
+                "sample_size": 20
+            },
+            "I3_gap_information_product": {
+                "mean": 124.35531252846997,
+                "std": 95.01149514147428,
+                "min": 6.528812259785752,
+                "max": 309.3523496426952,
+                "coefficient_of_variation": 0.7640324583617794,
+                "sample_size": 20
+            },
+            "I4_log_gap_information_ratio": {
+                "mean": 1.3147658817648922,
+                "std": 0.48121604554261604,
+                "min": 0.9187443967940113,
+                "max": 3.264406129892876,
+                "coefficient_of_variation": 0.3660089238828207,
+                "sample_size": 20
+            },
+            "I5_normalized_residual": {
+                "mean": -0.009382584676329912,
+                "std": 0.11066562279183406,
+                "min": -0.25392058272023954,
+                "max": 0.1773372935291063,
+                "coefficient_of_variation": 11.794790732986167,
+                "sample_size": 20
+            }
+        },
+        "candidate_invariants_ranked_by_stability": [
+            {
+                "name": "I4_log_gap_information_ratio",
+                "coefficient_of_variation": 0.3660089238828207
+            },
+            {
+                "name": "I2_gap_probability_product",
+                "coefficient_of_variation": 0.5249603158325781
+            },
+            {
+                "name": "I3_gap_information_product",
+                "coefficient_of_variation": 0.7640324583617794
+            },
+            {
+                "name": "I1_density_entropy_ratio",
+                "coefficient_of_variation": 0.9731585933934842
+            },
+            {
+                "name": "I5_normalized_residual",
+                "coefficient_of_variation": 11.794790732986167
+            }
+        ]
+    },
+    "outputs": {
+        "invariants_csv": "observatories\\information_observatory\\results\\invariants_1_1000000_top20_even.csv",
+        "summary_json": "observatories\\information_observatory\\results\\invariants_1_1000000_top20_even_summary.json"
+    },
+    "runtime": {
+        "load_primes_seconds": 0.001237630844116211,
+        "build_gaps_seconds": 0.0004165172576904297,
+        "invariant_seconds": 0.037041664123535156,
+        "total_seconds": 0.06465768814086914,
+        "total_minutes": 0.0010776281356811523
+    },
+    "python_version": "3.14.5 (tags/v3.14.5:5607950, May 10 2026, 10:43:50) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "numpy_version": "2.4.6"
+}
