@@ -12,12 +12,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Iterator
 
 import numpy as np
 
+from core.platform_config import load_platform_config
+from core.range_files import sorted_range_files
 
-DEFAULT_REPOSITORY_ROOT = Path(r"E:\PrimeNet\Repository")
+
+CONFIG = load_platform_config()
+DEFAULT_REPOSITORY_ROOT = CONFIG.paths.repository_root
 
 
 @dataclass(frozen=True)
@@ -37,36 +41,32 @@ class PrimeRepository:
     Read-only interface to the PrimeNet repository.
     """
 
-    def __init__(self, repository_root: Path | str = DEFAULT_REPOSITORY_ROOT):
-        self.repository_root = Path(repository_root)
+    def __init__(
+        self,
+        repository_root: Path | str = DEFAULT_REPOSITORY_ROOT,
+    ) -> None:
+        self.repository_root = Path(repository_root).expanduser().resolve()
         self.ranges_dir = self.repository_root / "ranges"
         self.metadata_dir = self.repository_root / "metadata"
 
         if not self.ranges_dir.exists():
-            raise FileNotFoundError(f"Ranges directory not found: {self.ranges_dir}")
+            raise FileNotFoundError(
+                f"Ranges directory not found: {self.ranges_dir}"
+            )
 
-        self._files = self._find_range_files()
+        self._range_files = sorted_range_files(
+            self.ranges_dir,
+            "primes",
+        )
+        self._files = [
+            range_file.path
+            for range_file in self._range_files
+        ]
 
         if not self._files:
-            raise RuntimeError(f"No prime range files found in {self.ranges_dir}")
-
-    def _parse_range_from_name(self, path: Path) -> tuple[int, int]:
-        """
-        Expected filename format:
-            primes_START_END.npy
-        """
-        stem = path.stem
-        parts = stem.split("_")
-
-        if len(parts) != 3 or parts[0] != "primes":
-            raise ValueError(f"Invalid range filename: {path.name}")
-
-        return int(parts[1]), int(parts[2])
-
-    def _find_range_files(self) -> list[Path]:
-        files = list(self.ranges_dir.glob("primes_*.npy"))
-        files.sort(key=self._parse_range_from_name)
-        return files
+            raise RuntimeError(
+                f"No prime range files found in {self.ranges_dir}"
+            )
 
     def block_count(self) -> int:
         return len(self._files)
@@ -74,17 +74,21 @@ class PrimeRepository:
     def files(self) -> list[Path]:
         return list(self._files)
 
-    def load_block(self, index: int, mmap_mode: str = "r") -> PrimeBlock:
+    def load_block(
+        self,
+        index: int,
+        mmap_mode: str = "r",
+    ) -> PrimeBlock:
         """
         Load one repository block by zero-based index.
 
         Default mmap_mode="r" keeps the file read-only.
         """
-        if index < 0 or index >= len(self._files):
+        if index < 0 or index >= len(self._range_files):
             raise IndexError(f"Block index out of range: {index}")
 
-        path = self._files[index]
-        start, end = self._parse_range_from_name(path)
+        range_file = self._range_files[index]
+        path = range_file.path
 
         arr = np.load(path, mmap_mode=mmap_mode)
 
@@ -97,20 +101,26 @@ class PrimeRepository:
         return PrimeBlock(
             index=index,
             path=path,
-            start=start,
-            end=end,
+            start=range_file.start,
+            end=range_file.end,
             count=int(arr.shape[0]),
             min_prime=int(arr[0]),
             max_prime=int(arr[-1]),
             primes=arr,
         )
 
-    def iter_blocks(self, mmap_mode: str = "r") -> Iterator[PrimeBlock]:
+    def iter_blocks(
+        self,
+        mmap_mode: str = "r",
+    ) -> Iterator[PrimeBlock]:
         """
-        Stream all repository blocks in numeric order.
+        Stream all repository blocks in canonical numeric order.
         """
-        for i in range(len(self._files)):
-            yield self.load_block(i, mmap_mode=mmap_mode)
+        for index in range(len(self._range_files)):
+            yield self.load_block(
+                index,
+                mmap_mode=mmap_mode,
+            )
 
     def iter_primes(self) -> Iterator[int]:
         """
@@ -120,17 +130,19 @@ class PrimeRepository:
         Use iter_blocks() for large observatory computations.
         """
         for block in self.iter_blocks(mmap_mode="r"):
-            for p in block.primes:
-                yield int(p)
+            for prime in block.primes:
+                yield int(prime)
 
     def total_primes_fast(self) -> int:
         """
         Count total primes by reading array shapes only.
         """
         total = 0
+
         for path in self._files:
             arr = np.load(path, mmap_mode="r")
             total += int(arr.shape[0])
+
         return total
 
     def boundaries(self) -> list[tuple[int, int, int, int]]:
@@ -140,19 +152,30 @@ class PrimeRepository:
         Each tuple:
             (index, start, end, count)
         """
-        rows = []
-        for i, path in enumerate(self._files):
-            start, end = self._parse_range_from_name(path)
-            arr = np.load(path, mmap_mode="r")
-            rows.append((i, start, end, int(arr.shape[0])))
+        rows: list[tuple[int, int, int, int]] = []
+
+        for index, range_file in enumerate(self._range_files):
+            arr = np.load(
+                range_file.path,
+                mmap_mode="r",
+            )
+            rows.append(
+                (
+                    index,
+                    range_file.start,
+                    range_file.end,
+                    int(arr.shape[0]),
+                )
+            )
+
         return rows
 
-    def summary(self) -> dict:
+    def summary(self) -> dict[str, object]:
         """
         Lightweight repository summary.
         """
         first = self.load_block(0)
-        last = self.load_block(len(self._files) - 1)
+        last = self.load_block(len(self._range_files) - 1)
 
         return {
             "repository_root": str(self.repository_root),
@@ -182,6 +205,7 @@ def main() -> None:
 
     print("Summary")
     print("-" * 80)
+
     for key, value in summary.items():
         print(f"{key}: {value}")
 

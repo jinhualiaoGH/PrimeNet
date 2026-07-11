@@ -24,14 +24,20 @@ from datetime import datetime
 from pathlib import Path
 
 
-REPOSITORY_ROOT = Path(r"E:\PrimeNet\Repository")
-RANGES_DIR = REPOSITORY_ROOT / "ranges"
-METADATA_DIR = REPOSITORY_ROOT / "metadata"
-LOGS_DIR = REPOSITORY_ROOT / "logs"
+from core.platform_config import load_platform_config
+from core.range_files import sorted_range_files
+
+
+CONFIG = load_platform_config()
+PATHS = CONFIG.paths
+
+REPOSITORY_ROOT = PATHS.repository_root
+RANGES_DIR = PATHS.ranges_dir
+METADATA_DIR = PATHS.metadata_dir
+LOGS_DIR = PATHS.logs_dir
 
 MANIFEST_CSV = METADATA_DIR / "repository_manifest.csv"
 PRIME_COUNTS_CSV = METADATA_DIR / "prime_counts.csv"
-INVENTORY_CSV = METADATA_DIR / "prime_inventory.csv"
 RUNTIME_CSV = LOGS_DIR / "builder_runtime.csv"
 VERIFY_SUMMARY = METADATA_DIR / "repository_verification_summary.txt"
 
@@ -80,7 +86,8 @@ def main() -> None:
 
     METADATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    files = sorted(RANGES_DIR.glob("primes_*.npy"))
+    range_files = sorted_range_files(RANGES_DIR, "primes")
+    files = [range_file.path for range_file in range_files]
 
     if not files:
         raise RuntimeError(f"No repository files found in {RANGES_DIR}")
@@ -92,7 +99,6 @@ def main() -> None:
     total_size_bytes = sum(p.stat().st_size for p in files)
     total_size_gb = total_size_bytes / (1024**3)
 
-    inventory_rows = read_csv(INVENTORY_CSV)
     count_rows = read_csv(PRIME_COUNTS_CSV)
     runtime_rows = read_csv(RUNTIME_CSV)
 
@@ -105,17 +111,6 @@ def main() -> None:
                     break
                 except Exception:
                     pass
-
-    if total_primes == 0:
-        # fallback from inventory if needed
-        for row in inventory_rows:
-            for key in ("count", "prime_count", "primes", "Count"):
-                if key in row:
-                    try:
-                        total_primes += int(row[key])
-                        break
-                    except Exception:
-                        pass
 
     runtimes = [
         parse_float(r, "runtime_min")
@@ -133,10 +128,9 @@ def main() -> None:
         "repository_version": REPOSITORY_VERSION,
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "repository_root": str(REPOSITORY_ROOT),
-        "range_start": 1,
-        "range_end": 1_000_000_000_000,
-        "partition_count": len(files),
-        "partition_size_nominal": 10_000_000_000,
+        "range_start": CONFIG.repository_extent.start,
+        "range_end": CONFIG.repository_extent.end,
+        "partition_size_nominal": CONFIG.campaign.range_size,
         "total_size_bytes": total_size_bytes,
         "total_size_gb": total_size_gb,
         "total_primes": total_primes,
@@ -154,7 +148,6 @@ def main() -> None:
         "processor": platform.processor(),
         "verification_summary": str(VERIFY_SUMMARY),
         "manifest_csv": str(MANIFEST_CSV),
-        "inventory_csv": str(INVENTORY_CSV),
         "prime_counts_csv": str(PRIME_COUNTS_CSV),
         "runtime_csv": str(RUNTIME_CSV),
     }
@@ -256,7 +249,6 @@ Statistics JSON: {STATISTICS_JSON}
 Performance JSON: {PERFORMANCE_JSON}
 Hashes CSV: {HASHES_CSV}
 Manifest CSV: {MANIFEST_CSV}
-Inventory CSV: {INVENTORY_CSV}
 Prime counts CSV: {PRIME_COUNTS_CSV}
 Verification summary: {VERIFY_SUMMARY}
 

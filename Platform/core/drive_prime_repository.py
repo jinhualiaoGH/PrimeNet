@@ -1,5 +1,5 @@
 """
-PrimeNet Repository Production Driver v2.0
+PrimeNet Repository Production Driver v2.1.0
 
 Config-driven production driver.
 
@@ -33,9 +33,16 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import yaml
+from core.platform_config import load_platform_config
 
+PLATFORM_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_CONFIG_PATH = PLATFORM_ROOT / "config" / "repository_build.yaml"
+PLATFORM_CONFIG = load_platform_config()
+PLATFORM_PATHS = PLATFORM_CONFIG.paths
+REPOSITORY_EXTENT = PLATFORM_CONFIG.repository_extent
 
-DEFAULT_CONFIG_PATH = Path("config/repository_build.yaml")
+DRIVER_NAME = "PrimeNet Repository Production Driver"
+DRIVER_VERSION = "2.1.0"
 
 
 def fmt(n: int) -> str:
@@ -75,8 +82,8 @@ def write_status(path: Path, status: dict) -> None:
     path.write_text(json.dumps(status, indent=2), encoding="utf-8")
 
 
-def expected_output_file(repository_root: Path, start: int, end: int) -> Path:
-    return repository_root / "ranges" / f"primes_{start}_{end}.npy"
+def expected_output_file(start: int, end: int) -> Path:
+    return PLATFORM_PATHS.ranges_dir / f"primes_{start}_{end}.npy"
 
 
 def run_build_prime_range(
@@ -101,7 +108,7 @@ def run_build_prime_range(
     if skip_existing:
         cmd.append("--skip-existing")
 
-    return subprocess.run(cmd, check=False).returncode
+    return subprocess.run(cmd, check=False, cwd=PLATFORM_ROOT).returncode
 
 
 def calculate_batches(start: int, end: int, batch_size: int) -> list[tuple[int, int]]:
@@ -125,24 +132,78 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    config_path = Path(args.config)
+    config_path = Path(args.config).expanduser()
+    if not config_path.is_absolute():
+        config_path = PLATFORM_ROOT / config_path
+    config_path = config_path.resolve()
     config = load_config(config_path)
 
-    repository_root = Path(config["repository"]["root"])
+    repository_root = PLATFORM_PATHS.repository_root
 
     range_start = int(config["range"]["start"])
     range_end = int(config["range"]["end"])
 
+    if range_start < REPOSITORY_EXTENT.start:
+        raise ValueError(
+            "Build range starts below the canonical repository extent: "
+            f"{range_start} < {REPOSITORY_EXTENT.start}"
+        )
+
+    if range_end > REPOSITORY_EXTENT.end:
+        raise ValueError(
+            "Build range ends above the canonical repository extent: "
+            f"{range_end} > {REPOSITORY_EXTENT.end}"
+        )
+
+    if range_end < range_start:
+        raise ValueError("Build range end must be >= build range start.")
+
     big_batch_size = int(config["big_batch"]["size"])
     output_batch_size = int(config["output_batch"]["size"])
 
-    overwrite = bool(config["build"]["overwrite"])
-    skip_existing = bool(config["build"]["skip_existing"])
+    if big_batch_size <= 0:
+        raise ValueError("big_batch.size must be > 0.")
 
-    runtime_csv = Path(config["logging"]["runtime_csv"])
-    status_json = Path(config["logging"]["status_json"])
+    if output_batch_size <= 0:
+        raise ValueError("output_batch.size must be > 0.")
 
-    stop_on_failure = bool(config["failure"]["stop_on_failure"])
+    if big_batch_size % output_batch_size != 0:
+        raise ValueError(
+            "big_batch.size must be an exact multiple of output_batch.size."
+        )
+
+    overwrite = config["build"]["overwrite"]
+    skip_existing = config["build"]["skip_existing"]
+
+    if not isinstance(overwrite, bool):
+        raise ValueError("build.overwrite must be true or false.")
+
+    if not isinstance(skip_existing, bool):
+        raise ValueError("build.skip_existing must be true or false.")
+
+    logging_config = config["logging"]
+
+    runtime_name = logging_config.get(
+        "runtime_file",
+        logging_config.get("runtime_csv", "builder_runtime.csv"),
+    )
+    status_name = logging_config.get(
+        "status_file",
+        logging_config.get("status_json", "production_status.json"),
+    )
+
+    runtime_csv = Path(str(runtime_name))
+    if not runtime_csv.is_absolute():
+        runtime_csv = PLATFORM_PATHS.logs_dir / runtime_csv
+
+    status_json = Path(str(status_name))
+    if not status_json.is_absolute():
+        status_json = PLATFORM_PATHS.logs_dir / status_json
+
+    stop_on_failure = config["failure"]["stop_on_failure"]
+
+    if not isinstance(stop_on_failure, bool):
+        raise ValueError("failure.stop_on_failure must be true or false.")
 
     big_batches = calculate_batches(range_start, range_end, big_batch_size)
     output_batches = calculate_batches(range_start, range_end, output_batch_size)
@@ -155,10 +216,15 @@ def main() -> None:
     failed = False
 
     print("=" * 80)
-    print("PrimeNet Repository Production Driver v2.0")
+    print(f"{DRIVER_NAME} v{DRIVER_VERSION}")
     print("=" * 80)
     print(f"Config          = {config_path}")
     print(f"Repository root = {repository_root}")
+    print(f"Ranges dir      = {PLATFORM_PATHS.ranges_dir}")
+    print(
+        f"Extent          = {fmt(REPOSITORY_EXTENT.start)} - "
+        f"{fmt(REPOSITORY_EXTENT.end)}"
+    )
     print(f"Range           = {fmt(range_start)} - {fmt(range_end)}")
     print(f"Big batch size  = {fmt(big_batch_size)}")
     print(f"Output size     = {fmt(output_batch_size)}")
@@ -182,7 +248,7 @@ def main() -> None:
         sub_batches = calculate_batches(big_start, big_end, output_batch_size)
 
         for sub_index, (sub_start, sub_end) in enumerate(sub_batches, start=1):
-            output_file = expected_output_file(repository_root, sub_start, sub_end)
+            output_file = expected_output_file(sub_start, sub_end)
 
             completed_output_batches += 1
 
@@ -388,12 +454,15 @@ def main() -> None:
 
     print()
     print("=" * 80)
-    print("PrimeNet Repository Production Driver v2.0 Finished")
+    print(f"{DRIVER_NAME} v{DRIVER_VERSION} Finished")
     print("=" * 80)
     print(f"Final status : {final_state}")
     print(f"Completed    : {completed_output_batches}/{total_output_batches}")
     print(f"Runtime      : {total_runtime_min:.3f} min")
     print("=" * 80)
+
+    if failed:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

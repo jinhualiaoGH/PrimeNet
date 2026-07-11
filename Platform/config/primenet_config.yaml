@@ -18,10 +18,15 @@ repository:
   version: "1.0"
   root: "E:/PrimeNet/Repository"
   ranges_dir: "E:/PrimeNet/Repository/ranges"
+  gaps_dir: "E:/PrimeNet/Repository/gaps_u16_v3"
+  metadata_dir: "E:/PrimeNet/Repository/metadata"
+  logs_dir: "E:/PrimeNet/Repository/logs"
   index_dir: "E:/PrimeNet/Repository/index"
   manifests_dir: "E:/PrimeNet/Repository/manifests"
   backups_dir: "E:/PrimeNet/Repository/backups"
   scripts_dir: "E:/PrimeNet/Repository/scripts"
+  extent_start: 1
+  extent_end: 3000000000000
 
 products:
   name: "PrimeNet Products"
@@ -34,9 +39,15 @@ products:
   archives_dir: "E:/PrimeNet/Products/archives"
   publications_dir: "E:/PrimeNet/Products/publications"
 
+campaign:
+  start: 1000000000001
+  end: 2000000000000
+  range_size: 10000000000
+  segment_size: 50000000
+
 repository_generation:
   official_range_size: 10000000000
-  official_segment_size: 10000000
+  official_segment_size: 50000000
   official_file_policy: "range-based"
   experimental_range_size: 50000000000
   experimental_segment_size: 50000000

@@ -22,19 +22,25 @@ from pathlib import Path
 
 import numpy as np
 
-from Platform.core.range_files import sorted_range_files
+from core.range_files import sorted_range_files
 
 
 VERSION = "3.0.0"
 
-REPOSITORY_ROOT = Path(r"E:\PrimeNet\Repository")
-PRIME_DIR = REPOSITORY_ROOT / "ranges"
+from core.platform_config import load_platform_config
 
-# Safe test output first. Do not overwrite canonical gaps_u16 yet.
-OUT_DIR = REPOSITORY_ROOT / "gaps_u16_v3"
 
-METADATA_DIR = REPOSITORY_ROOT / "metadata"
-LOG_DIR = REPOSITORY_ROOT / "logs"
+CONFIG = load_platform_config()
+PATHS = CONFIG.paths
+
+REPOSITORY_ROOT = PATHS.repository_root
+PRIME_DIR = PATHS.ranges_dir
+
+# Canonical index-aligned uint16 gap repository.
+OUT_DIR = PATHS.gaps_dir
+
+METADATA_DIR = PATHS.metadata_dir
+LOG_DIR = PATHS.logs_dir
 
 MANIFEST_CSV = METADATA_DIR / "gap_repository_u16_v3_manifest.csv"
 RUNTIME_CSV = LOG_DIR / "gap_u16_v3_runtime.csv"

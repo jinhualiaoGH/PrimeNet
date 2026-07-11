@@ -27,16 +27,22 @@ import numpy as np
 # Default repository configuration
 # =============================================================================
 
-REPOSITORY_ROOT = Path(r"E:\PrimeNet\Repository")
-RANGES_DIR = REPOSITORY_ROOT / "ranges"
-METADATA_DIR = REPOSITORY_ROOT / "metadata"
-LOGS_DIR = REPOSITORY_ROOT / "logs"
+from core.platform_config import load_platform_config
+
+
+CONFIG = load_platform_config()
+PATHS = CONFIG.paths
+
+REPOSITORY_ROOT = PATHS.repository_root
+RANGES_DIR = PATHS.ranges_dir
+METADATA_DIR = PATHS.metadata_dir
+LOGS_DIR = PATHS.logs_dir
 
 MANIFEST_FILE = METADATA_DIR / "repository_manifest.csv"
 COUNTS_FILE = METADATA_DIR / "prime_counts.csv"
 RUNTIME_LOG_FILE = LOGS_DIR / "builder_runtime.csv"
 
-DEFAULT_SEGMENT_SIZE = 50_000_000
+DEFAULT_SEGMENT_SIZE = CONFIG.campaign.segment_size
 DEFAULT_PROGRESS_STEP = 10
 
 

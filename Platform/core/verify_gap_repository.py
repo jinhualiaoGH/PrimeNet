@@ -1,5 +1,5 @@
 """
-PrimeNet Gap Repository Acceptance Audit v2.0.0
+PrimeNet Gap Repository Acceptance Audit v2.1.0
 
 Audits the complete index-aligned uint16 gap repository.
 
@@ -40,23 +40,33 @@ from __future__ import annotations
 
 import csv
 import math
+import sys
 import time
 from pathlib import Path
 
 import numpy as np
 
-from Platform.core.range_files import sorted_range_files, validate_adjacency
+from core.range_files import sorted_range_files, validate_adjacency
+from core.platform_config import load_platform_config
 
 
-VERSION = "2.0.0"
+VERSION = "2.1.0"
 
-REPOSITORY_ROOT = Path(r"E:\PrimeNet\Repository")
-PRIME_DIR = REPOSITORY_ROOT / "ranges"
-GAP_DIR = REPOSITORY_ROOT / "gaps_u16_v3"
+CONFIG = load_platform_config()
+PATHS = CONFIG.paths
+REPOSITORY_EXTENT = CONFIG.repository_extent
+
+REPOSITORY_START = REPOSITORY_EXTENT.start
+REPOSITORY_END = REPOSITORY_EXTENT.end
+
+REPOSITORY_ROOT = PATHS.repository_root
+PRIME_DIR = PATHS.ranges_dir
+
+# Canonical index-aligned uint16 gap repository.
+GAP_DIR = PATHS.gaps_dir
 
 MANIFEST_CSV = (
-    REPOSITORY_ROOT
-    / "metadata"
+    PATHS.metadata_dir
     / "gap_repository_u16_v3_manifest.csv"
 )
 
@@ -256,6 +266,10 @@ def main() -> None:
     print(f"Prime directory : {PRIME_DIR}")
     print(f"Gap directory   : {GAP_DIR}")
     print(f"Manifest        : {MANIFEST_CSV}")
+    print(
+        f"Repository extent: "
+        f"{fmt(REPOSITORY_START)} - {fmt(REPOSITORY_END)}"
+    )
     print(f"Chunk size      : {fmt(CHUNK_SIZE)} local gaps")
     print()
     print("Repository law:")
@@ -289,6 +303,47 @@ def main() -> None:
 
     if not gap_ranges:
         raise RuntimeError(f"No gap files found: {GAP_DIR}")
+
+    # ------------------------------------------------------------------
+    # Validate canonical physical repository extent.
+    # ------------------------------------------------------------------
+
+    first_prime_range = prime_ranges[0]
+    last_prime_range = prime_ranges[-1]
+    first_gap_range = gap_ranges[0]
+    last_gap_range = gap_ranges[-1]
+
+    if first_prime_range.start != REPOSITORY_START:
+        print(
+            "\n[FAIL] Prime repository start mismatch: "
+            f"expected={fmt(REPOSITORY_START)}, "
+            f"actual={fmt(first_prime_range.start)}"
+        )
+        errors += 1
+
+    if last_prime_range.end != REPOSITORY_END:
+        print(
+            "\n[FAIL] Prime repository end mismatch: "
+            f"expected={fmt(REPOSITORY_END)}, "
+            f"actual={fmt(last_prime_range.end)}"
+        )
+        errors += 1
+
+    if first_gap_range.start != REPOSITORY_START:
+        print(
+            "\n[FAIL] Gap repository start mismatch: "
+            f"expected={fmt(REPOSITORY_START)}, "
+            f"actual={fmt(first_gap_range.start)}"
+        )
+        errors += 1
+
+    if last_gap_range.end != REPOSITORY_END:
+        print(
+            "\n[FAIL] Gap repository end mismatch: "
+            f"expected={fmt(REPOSITORY_END)}, "
+            f"actual={fmt(last_gap_range.end)}"
+        )
+        errors += 1
 
     # ------------------------------------------------------------------
     # Validate numeric adjacency.
@@ -344,7 +399,7 @@ def main() -> None:
     if errors:
         print("\n[FATAL] Repository structure is not suitable for arithmetic audit.")
         print(f"Structural errors: {fmt(errors)}")
-        return
+        sys.exit(1)
 
     # ------------------------------------------------------------------
     # Load and structurally validate manifest.
@@ -417,6 +472,11 @@ def main() -> None:
         if gaps.ndim != 1:
             file_errors.append(
                 f"gap array is not 1D: shape={gaps.shape}"
+            )
+
+        if primes.dtype != np.dtype(np.uint64):
+            file_errors.append(
+                f"prime dtype={primes.dtype}, expected=uint64"
             )
 
         if gaps.dtype != EXPECTED_DTYPE:
@@ -654,6 +714,11 @@ def main() -> None:
         errors == 0
         and files_passed == len(prime_ranges)
         and len(prime_ranges) == len(gap_ranges)
+        and len(manifest_rows) == len(prime_ranges)
+        and prime_ranges[0].start == REPOSITORY_START
+        and prime_ranges[-1].end == REPOSITORY_END
+        and gap_ranges[0].start == REPOSITORY_START
+        and gap_ranges[-1].end == REPOSITORY_END
         and total_prime_count == total_gap_count
         and local_gaps_verified
         == total_prime_count - len(prime_ranges)
@@ -673,6 +738,7 @@ def main() -> None:
         print()
         print("The physical repository boundaries preserve arithmetic continuity.")
         print("=" * 80)
+        return
     else:
         print()
         print("=" * 80)
@@ -680,6 +746,7 @@ def main() -> None:
         print("The repository must not be used for scientific observation.")
         print("Review all failures before rerunning the audit.")
         print("=" * 80)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

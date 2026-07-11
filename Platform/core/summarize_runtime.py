@@ -5,11 +5,15 @@ import json
 import statistics
 from datetime import datetime
 from pathlib import Path
+from core.platform_config import load_platform_config
 
 
-ROOT = Path(r"E:\PrimeNet\Repository")
-RUNTIME_CSV = ROOT / "logs" / "builder_runtime.csv"
-META = ROOT / "metadata"
+CONFIG = load_platform_config()
+PATHS = CONFIG.paths
+
+ROOT = PATHS.repository_root
+RUNTIME_CSV = PATHS.logs_dir / "builder_runtime.csv"
+META = PATHS.metadata_dir
 
 SUMMARY_JSON = META / "repository_runtime_summary.json"
 SUMMARY_CSV = META / "repository_runtime_summary.csv"

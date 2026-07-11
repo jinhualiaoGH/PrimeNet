@@ -1,5 +1,5 @@
-repository:
-  root: "E:/PrimeNet/Repository"
+# PrimeNet repository production execution plan
+# Canonical paths and physical extent are read from primenet_config.yaml.
 
 range:
   start: 2000000000001
@@ -16,8 +16,8 @@ build:
   skip_existing: false
 
 logging:
-  runtime_csv: "E:/PrimeNet/Repository/logs/builder_runtime.csv"
-  status_json: "E:/PrimeNet/Repository/logs/production_status.json"
+  runtime_file: "builder_runtime.csv"
+  status_file: "production_status.json"
 
 failure:
   stop_on_failure: true

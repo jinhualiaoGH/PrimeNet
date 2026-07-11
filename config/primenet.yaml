@@ -5,7 +5,7 @@ project:
   description: "An Observatory for Prime Information Structures"
 
 paths:
-  repository: repository
+  repository: E:/PrimeNet/Repository
   catalog: catalog
   core: core
   observatories: observatories
@@ -24,8 +24,7 @@ database:
 
 repository:
   prime_sources:
-    - D:/PrimeNet_Repository_1_100B/ranges
-    - C:/Prime_Distribution_Project/prime_repository/ranges
+    - E:/PrimeNet/Repository/ranges
 
   gap_repository: repository/raw/gaps
   event_repository: repository/raw/events

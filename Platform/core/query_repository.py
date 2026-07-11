@@ -21,6 +21,9 @@ from typing import Any
 
 import numpy as np
 
+from core.platform_config import load_platform_config
+from core.range_files import sorted_range_files
+
 
 class PrimeRepository:
     """
@@ -40,16 +43,32 @@ class PrimeRepository:
 
     def __init__(
         self,
-        root: str | Path = r"E:\PrimeNet\Repository",
+        root: str | Path | None = None,
         cache_size: int = 4,
     ) -> None:
-        self.root = Path(root)
-        self.prime_dir = self.root / "ranges"
-        self.gap_dir = self.root / "gaps_u16"
-        self.metadata_dir = self.root / "metadata"
+        config = load_platform_config()
+        paths = config.paths
+
+        self.root = (
+            Path(root).expanduser().resolve()
+            if root is not None
+            else paths.repository_root
+        )
+
+        if root is None:
+            self.prime_dir = paths.ranges_dir
+            self.metadata_dir = paths.metadata_dir
+        else:
+            self.prime_dir = self.root / "ranges"
+            self.metadata_dir = self.root / "metadata"
+
+        self.gap_dir = paths.gaps_dir if root is None else self.root / "gaps_u16_v3"
 
         self.prime_manifest = self.metadata_dir / "repository_manifest.csv"
-        self.gap_manifest = self.metadata_dir / "gap_repository_u16_manifest.csv"
+        self.gap_manifest = (
+            self.metadata_dir
+            / "gap_repository_u16_v3_manifest.csv"
+        )
 
         self.cache_size = cache_size
         self._prime_cache: OrderedDict[int, np.ndarray] = OrderedDict()
@@ -120,9 +139,13 @@ class PrimeRepository:
                     )
 
         if not rows:
-            for path in self.prime_dir.glob("primes_*.npy"):
-                start, end = self._parse_range_filename(path, "primes_")
+            for range_file in sorted_range_files(self.prime_dir, "primes"):
+                path = range_file.path
+                start = range_file.start
+                end = range_file.end
+
                 count = int(len(np.load(path, mmap_mode="r")))
+
                 rows.append(
                     {
                         "range_start": start,
@@ -175,9 +198,13 @@ class PrimeRepository:
                     )
 
         if not rows:
-            for path in self.gap_dir.glob("gaps_*.npy"):
-                start, end = self._parse_range_filename(path, "gaps_")
+            for range_file in sorted_range_files(self.gap_dir, "gaps"):
+                path = range_file.path
+                start = range_file.start
+                end = range_file.end
+
                 arr = np.load(path, mmap_mode="r")
+
                 rows.append(
                     {
                         "range_start": start,
@@ -421,6 +448,7 @@ class PrimeRepository:
 
 
 def main() -> None:
+    config = load_platform_config()
     repo = PrimeRepository()
 
     print("=" * 80)
@@ -439,7 +467,7 @@ def main() -> None:
     for i in [1, 2, 3, 10, 1_000_000]:
         print(f"g({i}) = {repo.gap(i)}")
 
-    n = 1_000_000_000_000
+    n = load_platform_config().campaign.start
 
     print()
     print(f"floor_prime({n})   = {repo.floor_prime(n)}")
