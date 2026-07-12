@@ -211,21 +211,49 @@ def iter_text_files() -> list[Path]:
         ".py", ".md", ".yaml", ".yml", ".json",
         ".ps1", ".txt", ".toml",
     }
+
+    active_roots = [
+        PRIMENET_ROOT / "core",
+        PRIMENET_ROOT / "Platform",
+        PRIMENET_ROOT / "instruments",
+        PRIMENET_ROOT / "observatories",
+        PRIMENET_ROOT / "maintenance",
+        PRIMENET_ROOT / "README.md",
+        PRIMENET_ROOT / "ARCHITECTURE.md",
+        PRIMENET_ROOT / "CONTRIBUTING.md",
+        PRIMENET_ROOT / "CODE_OF_CONDUCT.md",
+        PRIMENET_ROOT / "CITATION.cff",
+        PRIMENET_ROOT / "manifest.json",
+    ]
+
     files: list[Path] = []
 
-    for path in PRIMENET_ROOT.rglob("*"):
-        if not path.is_file():
+    for root in active_roots:
+        if not root.exists():
             continue
-        if "archive" in path.parts:
-            continue
-        if path.resolve() == Path(__file__).resolve():
-            continue
-        if REPORT_DIR in path.parents:
-            continue
-        if path.suffix.lower() in suffixes:
-            files.append(path)
 
-    return sorted(files)
+        if root.is_file():
+            if (
+                root.suffix.lower() in suffixes
+                and root.resolve() != Path(__file__).resolve()
+            ):
+                files.append(root)
+            continue
+
+        for path in root.rglob("*"):
+            if not path.is_file():
+                continue
+
+            if "archive" in path.parts:
+                continue
+
+            if path.resolve() == Path(__file__).resolve():
+                continue
+
+            if path.suffix.lower() in suffixes:
+                files.append(path)
+
+    return sorted(set(files))
 
 
 def parse_numeric_range(path: Path, prefix: str) -> tuple[int, int]:
