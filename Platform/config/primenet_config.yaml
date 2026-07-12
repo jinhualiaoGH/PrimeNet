@@ -18,7 +18,7 @@ repository:
   version: "1.0"
   root: "E:/PrimeNet/Repository"
   ranges_dir: "E:/PrimeNet/Repository/ranges"
-  gaps_dir: "E:/PrimeNet/Repository/gaps_u16_v3"
+  gaps_dir: "E:/PrimeNet/Repository/gaps"
   metadata_dir: "E:/PrimeNet/Repository/metadata"
   logs_dir: "E:/PrimeNet/Repository/logs"
   index_dir: "E:/PrimeNet/Repository/index"
