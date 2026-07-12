@@ -16,8 +16,8 @@ build:
   skip_existing: false
 
 logging:
-  runtime_file: "builder_runtime.csv"
-  status_file: "production_status.json"
+  runtime_file: repository_driver_runtime.csv
+  status_file: production_status.json
 
 failure:
   stop_on_failure: true
