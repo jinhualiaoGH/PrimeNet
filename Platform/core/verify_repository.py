@@ -1,28 +1,51 @@
 """
-PrimeNet Repository Verifier
-============================
+PrimeNet Repository Verifier v1.3.0
+===================================
 
-Verify PrimeNet prime repository files and produce verification artifacts.
+Verify the canonical PrimeNet uint64 prime repository.
 
-Modes
------
+Verification modes
+------------------
 fast:
-    Operational readiness verification. Checks repository topology,
-    file loadability, shape, dtype, non-empty arrays, endpoint range
-    consistency, and cross-file prime ordering. Skips full-array
-    monotonic scanning and SHA-256 hashing.
+    Operational readiness verification.
+
+    Checks:
+        - exact physical file inventory;
+        - canonical numeric range topology;
+        - file loadability;
+        - one-dimensional uint64 arrays;
+        - nonempty arrays;
+        - endpoint containment;
+        - cross-file prime ordering.
+
+    Skips:
+        - complete within-file monotonic scanning;
+        - SHA-256 hashing.
 
 full:
-    Formal repository certification. Performs all fast checks plus
-    complete per-file monotonic scanning and SHA-256 hashing.
+    Formal repository certification.
 
-Run from:
+    Performs every fast check plus:
+        - chunked complete monotonic scanning;
+        - SHA-256 hashing.
 
-    C:\\PrimeNet\\Platform
+Artifact ownership
+------------------
+This module is the sole owner of:
 
-Commands:
+    repository_manifest.csv
+    repository_verification_summary.txt
 
+The canonical full manifest is atomically replaced only when the entire
+repository is accepted. A rejected or interrupted verification never
+replaces the last accepted canonical manifest.
+
+Fast-mode and rejected-run artifacts use separate filenames.
+
+Examples
+--------
     py -m Platform.core.verify_repository --mode fast
+
     py -m Platform.core.verify_repository --mode full
 """
 
@@ -31,545 +54,1144 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
-import re
+import json
+import os
 import sys
 import time
+import uuid
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Iterable
 
 import numpy as np
 
-from Platform.core.platform_config import load_platform_config
-from Platform.core.range_files import sorted_range_files, validate_adjacency
+from Platform.core.platform_config import (
+    PlatformConfiguration,
+    load_platform_config,
+)
+from Platform.core.range_files import (
+    RangeFile,
+    sorted_range_files,
+    validate_adjacency,
+)
 
 
 VERIFIER_NAME = "PrimeNet Repository Verifier"
-VERIFIER_VERSION = "1.2.1"
+VERIFIER_VERSION = "1.3.0"
 
-CONFIG = load_platform_config()
-PATHS = CONFIG.paths
-CAMPAIGN = CONFIG.campaign
+DEFAULT_HASH_BLOCK_SIZE = 16 * 1024 * 1024
+DEFAULT_MONOTONIC_CHUNK_SIZE = 10_000_000
 
-REPOSITORY_DIR = PATHS.repository_root
-RANGES_DIR = PATHS.ranges_dir
-METADATA_DIR = PATHS.metadata_dir
+CANONICAL_MANIFEST_FIELDS = [
+    "file_name",
+    "n_start",
+    "n_end",
+    "file_size_gb",
+    "prime_count",
+    "min_prime",
+    "max_prime",
+    "dtype",
+    "sha256",
+    "status",
+    "messages",
+    "verified_at",
+    "verifier_version",
+]
 
-CAMPAIGN_START = CAMPAIGN.start
-CAMPAIGN_END = CAMPAIGN.end
-BATCH_SIZE = CAMPAIGN.range_size
-SEGMENT_SIZE = CAMPAIGN.segment_size
-
-FULL_MANIFEST_FILE = METADATA_DIR / "repository_manifest.csv"
-FULL_SUMMARY_FILE = METADATA_DIR / "repository_verification_summary.txt"
-FAST_MANIFEST_FILE = METADATA_DIR / "repository_fast_manifest.csv"
-FAST_SUMMARY_FILE = METADATA_DIR / "repository_fast_verification_summary.txt"
-
-FILENAME_RE = re.compile(r"^primes_(\d+)_(\d+)\.npy$")
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Verify the PrimeNet prime repository."
-    )
-    parser.add_argument(
-        "--mode",
-        choices=("fast", "full"),
-        default="full",
-        help=(
-            "Verification mode. 'fast' skips full-array monotonic scans "
-            "and SHA-256 hashing. Default: full."
-        ),
-    )
-    return parser.parse_args()
+DIAGNOSTIC_MANIFEST_FIELDS = [
+    "verification_mode",
+    *CANONICAL_MANIFEST_FIELDS,
+]
 
 
-def verification_artifacts(mode: str) -> tuple[Path, Path]:
-    if mode == "fast":
-        return FAST_MANIFEST_FILE, FAST_SUMMARY_FILE
-    return FULL_MANIFEST_FILE, FULL_SUMMARY_FILE
+@dataclass(frozen=True)
+class VerifierPaths:
+    repository_root: Path
+    ranges_dir: Path
+    metadata_dir: Path
+    canonical_manifest: Path
+    canonical_summary: Path
+    fast_manifest: Path
+    fast_summary: Path
 
 
-def sha256_file(
-    path: Path,
-    block_size: int = 1024 * 1024 * 16,
-) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        while True:
-            block = f.read(block_size)
-            if not block:
-                break
-            h.update(block)
-    return h.hexdigest()
+@dataclass(frozen=True)
+class VerifierSettings:
+    mode: str
+    expected_start: int
+    expected_end: int
+    range_size: int
+    segment_size: int
+    hash_block_size: int
+    monotonic_chunk_size: int
+
+    @property
+    def full_scan(self) -> bool:
+        return self.mode == "full"
+
+    @property
+    def hashing_enabled(self) -> bool:
+        return self.mode == "full"
 
 
-def parse_range_from_filename(path: Path) -> tuple[int, int]:
-    match = FILENAME_RE.match(path.name)
-    if not match:
-        raise ValueError(f"Invalid filename format: {path.name}")
-    return int(match.group(1)), int(match.group(2))
+@dataclass(frozen=True)
+class FileVerification:
+    range_file: RangeFile
+    status: str
+    messages: tuple[str, ...]
+    file_size_bytes: int
+    prime_count: int
+    min_prime: int | None
+    max_prime: int | None
+    dtype: str
+    sha256: str
+    verified_at: str
 
+    @property
+    def passed(self) -> bool:
+        return self.status == "passed"
 
-def verify_array(
-    path: Path,
-    expected_start: int,
-    expected_end: int,
-    *,
-    full_scan: bool,
-) -> dict:
-    arr = np.load(path, mmap_mode="r")
-
-    status = "passed"
-    messages: list[str] = []
-
-    if arr.ndim != 1:
-        status = "failed"
-        messages.append(f"invalid_shape={arr.shape}")
+    def canonical_row(self) -> dict[str, Any]:
         return {
-            "status": status,
-            "messages": ";".join(messages),
-            "prime_count": int(arr.size),
-            "min_prime": None,
-            "max_prime": None,
-            "dtype": str(arr.dtype),
+            "file_name": self.range_file.path.name,
+            "n_start": self.range_file.start,
+            "n_end": self.range_file.end,
+            "file_size_gb": (
+                f"{self.file_size_bytes / (1024 ** 3):.9f}"
+            ),
+            "prime_count": self.prime_count,
+            "min_prime": (
+                self.min_prime
+                if self.min_prime is not None
+                else ""
+            ),
+            "max_prime": (
+                self.max_prime
+                if self.max_prime is not None
+                else ""
+            ),
+            "dtype": self.dtype,
+            "sha256": self.sha256,
+            "status": self.status,
+            "messages": ";".join(self.messages),
+            "verified_at": self.verified_at,
+            "verifier_version": VERIFIER_VERSION,
         }
 
-    if arr.dtype != np.uint64:
-        status = "failed"
-        messages.append(f"invalid_dtype={arr.dtype}")
-
-    prime_count = int(arr.size)
-
-    if prime_count == 0:
-        status = "failed"
-        messages.append("empty_array")
-        min_prime = None
-        max_prime = None
-    else:
-        min_prime = int(arr[0])
-        max_prime = int(arr[-1])
-
-        if min_prime < max(2, expected_start):
-            status = "failed"
-            messages.append("min_prime_below_range")
-
-        if max_prime > expected_end:
-            status = "failed"
-            messages.append("max_prime_above_range")
-
-        if (
-            full_scan
-            and prime_count > 1
-            and not np.all(arr[1:] > arr[:-1])
-        ):
-            status = "failed"
-            messages.append("not_strictly_increasing")
-
-    return {
-        "status": status,
-        "messages": ";".join(messages),
-        "prime_count": prime_count,
-        "min_prime": min_prime,
-        "max_prime": max_prime,
-        "dtype": str(arr.dtype),
-    }
+    def diagnostic_row(
+        self,
+        mode: str,
+    ) -> dict[str, Any]:
+        return {
+            "verification_mode": mode,
+            **self.canonical_row(),
+        }
 
 
-def expected_ranges() -> list[tuple[int, int]]:
+@dataclass(frozen=True)
+class VerificationTotals:
+    physical_files: int
+    expected_files: int
+    verified_files: int
+    passed_files: int
+    failed_files: int
+    missing_ranges: int
+    extra_ranges: int
+    adjacency_issues: int
+    boundary_issues: int
+
+    @property
+    def topology_errors(self) -> int:
+        return (
+            self.missing_ranges
+            + self.extra_ranges
+            + self.adjacency_issues
+            + self.boundary_issues
+        )
+
+
+def now_iso() -> str:
+    return datetime.now().isoformat(
+        timespec="seconds"
+    )
+
+
+def make_run_id() -> str:
+    timestamp = datetime.now().strftime(
+        "%Y%m%d_%H%M%S"
+    )
+    return (
+        f"{timestamp}_{uuid.uuid4().hex[:8]}"
+    )
+
+
+def resolve_paths(
+    config: PlatformConfiguration,
+) -> VerifierPaths:
+    metadata_dir = config.paths.metadata_dir
+
+    return VerifierPaths(
+        repository_root=config.paths.repository_root,
+        ranges_dir=config.paths.ranges_dir,
+        metadata_dir=metadata_dir,
+        canonical_manifest=(
+            metadata_dir
+            / "repository_manifest.csv"
+        ),
+        canonical_summary=(
+            metadata_dir
+            / "repository_verification_summary.txt"
+        ),
+        fast_manifest=(
+            metadata_dir
+            / "repository_fast_manifest.csv"
+        ),
+        fast_summary=(
+            metadata_dir
+            / "repository_fast_verification_summary.txt"
+        ),
+    )
+
+
+def expected_ranges(
+    start: int,
+    end: int,
+    range_size: int,
+) -> list[tuple[int, int]]:
+    if start < 1:
+        raise ValueError(
+            "Expected repository start must be >= 1."
+        )
+
+    if end < start:
+        raise ValueError(
+            "Expected repository end must be >= start."
+        )
+
+    if range_size <= 0:
+        raise ValueError(
+            "Expected repository range size must be > 0."
+        )
+
     ranges: list[tuple[int, int]] = []
-    current = CAMPAIGN_START
-    end_limit = CAMPAIGN_END
-    batch_size = BATCH_SIZE
+    current = start
 
-    while current <= end_limit:
-        end = min(current + batch_size - 1, end_limit)
-        ranges.append((current, end))
-        current = end + 1
+    while current <= end:
+        range_end = min(
+            current + range_size - 1,
+            end,
+        )
+        ranges.append(
+            (
+                current,
+                range_end,
+            )
+        )
+        current = range_end + 1
 
     return ranges
 
 
-def write_manifest(path: Path, rows: list[dict]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-    fields = [
-        "verification_mode",
-        "file_name",
-        "n_start",
-        "n_end",
-        "file_size_gb",
-        "prime_count",
-        "min_prime",
-        "max_prime",
-        "dtype",
-        "sha256",
-        "status",
-        "messages",
-        "verified_at",
-        "verifier_version",
-    ]
-
-    with path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fields)
-        writer.writeheader()
-        writer.writerows(rows)
-
-
-def write_summary(
+def sha256_file(
     path: Path,
-    *,
-    verification_mode: str,
-    total_expected: int,
-    total_discovered: int,
-    total_found: int,
-    total_passed: int,
-    total_failed: int,
-    total_missing: int,
-    total_topology_errors: int,
-    accepted: bool,
-    runtime_sec: float,
-    manifest_file: Path,
-) -> None:
-    full_scan = verification_mode == "full"
+    block_size: int,
+) -> str:
+    digest = hashlib.sha256()
 
-    text = f"""
-PrimeNet Repository Verification Summary
-=======================================
+    with path.open("rb") as handle:
+        while True:
+            block = handle.read(block_size)
 
-Verified at: {datetime.now().isoformat(timespec="seconds")}
-Verifier version: {VERIFIER_VERSION}
-Verification mode: {verification_mode}
+            if not block:
+                break
 
-Repository root: {REPOSITORY_DIR}
-Ranges directory: {RANGES_DIR}
+            digest.update(block)
 
-Configured start: {CAMPAIGN_START}
-Configured end: {CAMPAIGN_END}
-Batch size: {BATCH_SIZE}
-Segment size: {SEGMENT_SIZE}
-
-Expected files: {total_expected}
-Discovered files: {total_discovered}
-Found files: {total_found}
-Passed files: {total_passed}
-Failed files: {total_failed}
-Missing files: {total_missing}
-Topology errors: {total_topology_errors}
-Accepted: {accepted}
-
-Full-array monotonic scan: {full_scan}
-SHA-256 hashing: {full_scan}
-
-Runtime seconds: {runtime_sec:.3f}
-Runtime minutes: {runtime_sec / 60.0:.6f}
-
-Manifest:
-{manifest_file}
-"""
-
-    with path.open("w", encoding="utf-8") as f:
-        f.write(text.strip() + "\n")
+    return digest.hexdigest()
 
 
-def verify_cross_file_boundaries(range_files) -> list[str]:
+def chunked_strictly_increasing(
+    array: np.ndarray,
+    chunk_size: int,
+) -> bool:
     """
-    Verify strict prime ordering across adjacent repository files.
-
-    For each neighboring pair:
-        last_prime(file_k) < first_prime(file_k+1)
+    Verify strict monotonicity without allocating one enormous
+    Boolean array for the complete repository block.
     """
-    issues: list[str] = []
+    count = int(array.shape[0])
 
-    for index in range(len(range_files) - 1):
-        current = range_files[index]
-        following = range_files[index + 1]
+    if count <= 1:
+        return True
 
-        current_arr = np.load(current.path, mmap_mode="r")
-        following_arr = np.load(following.path, mmap_mode="r")
+    if chunk_size <= 0:
+        raise ValueError(
+            "Monotonic chunk size must be > 0."
+        )
 
-        if current_arr.ndim != 1 or following_arr.ndim != 1:
+    previous_last = int(array[0])
+    start = 1
+
+    while start < count:
+        stop = min(
+            start + chunk_size,
+            count,
+        )
+
+        chunk = array[start:stop]
+
+        if chunk.size == 0:
+            break
+
+        first_value = int(chunk[0])
+
+        if first_value <= previous_last:
+            return False
+
+        if (
+            chunk.size > 1
+            and not bool(
+                np.all(
+                    chunk[1:] > chunk[:-1]
+                )
+            )
+        ):
+            return False
+
+        previous_last = int(chunk[-1])
+        start = stop
+
+    return True
+
+
+def verify_one_file(
+    range_file: RangeFile,
+    settings: VerifierSettings,
+) -> FileVerification:
+    path = range_file.path
+    messages: list[str] = []
+    verified_at = now_iso()
+
+    file_size_bytes = (
+        path.stat().st_size
+        if path.is_file()
+        else 0
+    )
+
+    prime_count = 0
+    min_prime: int | None = None
+    max_prime: int | None = None
+    dtype = ""
+    checksum = ""
+
+    if not path.is_file():
+        return FileVerification(
+            range_file=range_file,
+            status="missing",
+            messages=("file_missing",),
+            file_size_bytes=0,
+            prime_count=0,
+            min_prime=None,
+            max_prime=None,
+            dtype="",
+            sha256="",
+            verified_at=verified_at,
+        )
+
+    try:
+        array = np.load(
+            path,
+            mmap_mode="r",
+            allow_pickle=False,
+        )
+    except Exception as exc:
+        return FileVerification(
+            range_file=range_file,
+            status="failed",
+            messages=(
+                f"load_error={type(exc).__name__}: {exc}",
+            ),
+            file_size_bytes=file_size_bytes,
+            prime_count=0,
+            min_prime=None,
+            max_prime=None,
+            dtype="",
+            sha256="",
+            verified_at=verified_at,
+        )
+
+    dtype = str(array.dtype)
+    prime_count = int(array.size)
+
+    if array.ndim != 1:
+        messages.append(
+            f"invalid_shape={array.shape}"
+        )
+
+    if array.dtype != np.uint64:
+        messages.append(
+            f"invalid_dtype={array.dtype}"
+        )
+
+    if array.ndim == 1 and prime_count == 0:
+        messages.append("empty_array")
+
+    if array.ndim == 1 and prime_count > 0:
+        min_prime = int(array[0])
+        max_prime = int(array[-1])
+
+        expected_minimum = max(
+            2,
+            range_file.start,
+        )
+
+        if min_prime < expected_minimum:
+            messages.append(
+                "min_prime_below_range"
+            )
+
+        if max_prime > range_file.end:
+            messages.append(
+                "max_prime_above_range"
+            )
+
+        if (
+            settings.full_scan
+            and array.dtype == np.uint64
+            and not chunked_strictly_increasing(
+                array=array,
+                chunk_size=(
+                    settings.monotonic_chunk_size
+                ),
+            )
+        ):
+            messages.append(
+                "not_strictly_increasing"
+            )
+
+    if (
+        settings.hashing_enabled
+        and not messages
+    ):
+        try:
+            checksum = sha256_file(
+                path=path,
+                block_size=settings.hash_block_size,
+            )
+        except Exception as exc:
+            messages.append(
+                "sha256_error="
+                f"{type(exc).__name__}: {exc}"
+            )
+
+    status = (
+        "passed"
+        if not messages
+        else "failed"
+    )
+
+    return FileVerification(
+        range_file=range_file,
+        status=status,
+        messages=tuple(messages),
+        file_size_bytes=file_size_bytes,
+        prime_count=prime_count,
+        min_prime=min_prime,
+        max_prime=max_prime,
+        dtype=dtype,
+        sha256=checksum,
+        verified_at=verified_at,
+    )
+
+
+def verify_boundaries(
+    results: Iterable[FileVerification],
+) -> list[dict[str, Any]]:
+    """
+    Verify strict prime ordering across adjacent repository files
+    using the already collected file endpoints.
+    """
+    passed_results = list(results)
+    issues: list[dict[str, Any]] = []
+
+    for previous, current in zip(
+        passed_results,
+        passed_results[1:],
+    ):
+        if (
+            previous.max_prime is None
+            or current.min_prime is None
+        ):
             issues.append(
-                "boundary_shape_error: "
-                f"{current.path.name} shape={current_arr.shape}, "
-                f"{following.path.name} shape={following_arr.shape}"
+                {
+                    "issue_type": "BOUNDARY_UNAVAILABLE",
+                    "previous": (
+                        previous.range_file.path.name
+                    ),
+                    "current": (
+                        current.range_file.path.name
+                    ),
+                    "previous_max": (
+                        previous.max_prime
+                    ),
+                    "current_min": (
+                        current.min_prime
+                    ),
+                }
             )
             continue
 
-        if current_arr.size == 0 or following_arr.size == 0:
+        if (
+            previous.max_prime
+            >= current.min_prime
+        ):
             issues.append(
-                "boundary_empty_array: "
-                f"{current.path.name} size={current_arr.size}, "
-                f"{following.path.name} size={following_arr.size}"
-            )
-            continue
-
-        current_last = int(current_arr[-1])
-        following_first = int(following_arr[0])
-
-        if current_last >= following_first:
-            issues.append(
-                "boundary_order_error: "
-                f"{current.path.name} last={current_last}, "
-                f"{following.path.name} first={following_first}"
+                {
+                    "issue_type": "BOUNDARY_ORDER",
+                    "previous": (
+                        previous.range_file.path.name
+                    ),
+                    "current": (
+                        current.range_file.path.name
+                    ),
+                    "previous_max": (
+                        previous.max_prime
+                    ),
+                    "current_min": (
+                        current.min_prime
+                    ),
+                }
             )
 
     return issues
 
 
-def main() -> None:
-    args = parse_args()
-    mode = args.mode
-    full_scan = mode == "full"
-    manifest_file, summary_file = verification_artifacts(mode)
+def atomic_write_csv(
+    path: Path,
+    *,
+    fieldnames: list[str],
+    rows: Iterable[dict[str, Any]],
+) -> None:
+    path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
-    t0 = time.time()
+    temporary_path = path.with_name(
+        f".{path.name}.{uuid.uuid4().hex}.tmp"
+    )
 
-    print("=" * 80)
-    print(f"{VERIFIER_NAME} v{VERIFIER_VERSION}")
-    print("=" * 80)
-    print(f"Verification mode = {mode}")
-    print(f"Repository root   = {REPOSITORY_DIR}")
-    print(f"Ranges dir        = {RANGES_DIR}")
-    print(f"Manifest          = {manifest_file}")
-    print(f"Summary           = {summary_file}")
-    print(f"Full array scan   = {full_scan}")
-    print(f"SHA-256 hashing   = {full_scan}")
-    print("=" * 80)
+    try:
+        with temporary_path.open(
+            "w",
+            encoding="utf-8",
+            newline="",
+        ) as handle:
+            writer = csv.DictWriter(
+                handle,
+                fieldnames=fieldnames,
+                extrasaction="raise",
+            )
+            writer.writeheader()
+            writer.writerows(rows)
+            handle.flush()
+            os.fsync(handle.fileno())
 
-    expected = expected_ranges()
-    rows: list[dict] = []
-
-    all_discovered_ranges = sorted_range_files(RANGES_DIR, "primes")
-
-    discovered_ranges = [
-        range_file
-        for range_file in all_discovered_ranges
-        if (
-            range_file.start >= CAMPAIGN_START
-            and range_file.end <= CAMPAIGN_END
+        os.replace(
+            temporary_path,
+            path,
         )
+
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
+
+
+def atomic_write_text(
+    path: Path,
+    text: str,
+) -> None:
+    path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    temporary_path = path.with_name(
+        f".{path.name}.{uuid.uuid4().hex}.tmp"
+    )
+
+    try:
+        with temporary_path.open(
+            "w",
+            encoding="utf-8",
+        ) as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+
+        os.replace(
+            temporary_path,
+            path,
+        )
+
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
+
+
+def atomic_write_json(
+    path: Path,
+    payload: dict[str, Any],
+) -> None:
+    text = (
+        json.dumps(
+            payload,
+            indent=2,
+        )
+        + "\n"
+    )
+    atomic_write_text(
+        path=path,
+        text=text,
+    )
+
+
+def diagnostic_manifest_path(
+    metadata_dir: Path,
+    *,
+    mode: str,
+    run_id: str,
+    accepted: bool,
+) -> Path:
+    state = (
+        "accepted"
+        if accepted
+        else "rejected"
+    )
+
+    return (
+        metadata_dir
+        / (
+            f"repository_{mode}_verification_"
+            f"{state}_{run_id}.csv"
+        )
+    )
+
+
+def diagnostic_summary_path(
+    metadata_dir: Path,
+    *,
+    mode: str,
+    run_id: str,
+    accepted: bool,
+) -> Path:
+    state = (
+        "accepted"
+        if accepted
+        else "rejected"
+    )
+
+    return (
+        metadata_dir
+        / (
+            f"repository_{mode}_verification_"
+            f"{state}_{run_id}.txt"
+        )
+    )
+
+
+def build_summary(
+    *,
+    run_id: str,
+    settings: VerifierSettings,
+    paths: VerifierPaths,
+    totals: VerificationTotals,
+    accepted: bool,
+    runtime_sec: float,
+    missing_ranges: list[tuple[int, int]],
+    extra_ranges: list[tuple[int, int]],
+    adjacency_issues: list[dict[str, Any]],
+    boundary_issues: list[dict[str, Any]],
+    published_manifest: Path | None,
+    diagnostic_manifest: Path,
+) -> str:
+    lines = [
+        "PrimeNet Repository Verification Summary",
+        "=======================================",
+        "",
+        f"Run ID: {run_id}",
+        f"Verified at: {now_iso()}",
+        f"Verifier version: {VERIFIER_VERSION}",
+        f"Verification mode: {settings.mode}",
+        "",
+        f"Repository root: {paths.repository_root}",
+        f"Ranges directory: {paths.ranges_dir}",
+        "",
+        f"Configured start: {settings.expected_start}",
+        f"Configured end: {settings.expected_end}",
+        f"Range size: {settings.range_size}",
+        f"Segment size: {settings.segment_size}",
+        "",
+        f"Physical files: {totals.physical_files}",
+        f"Expected files: {totals.expected_files}",
+        f"Verified files: {totals.verified_files}",
+        f"Passed files: {totals.passed_files}",
+        f"Failed files: {totals.failed_files}",
+        f"Missing ranges: {totals.missing_ranges}",
+        f"Extra ranges: {totals.extra_ranges}",
+        f"Adjacency issues: {totals.adjacency_issues}",
+        f"Boundary issues: {totals.boundary_issues}",
+        f"Topology errors: {totals.topology_errors}",
+        "",
+        f"Full-array monotonic scan: {settings.full_scan}",
+        f"SHA-256 hashing: {settings.hashing_enabled}",
+        f"Monotonic chunk size: {settings.monotonic_chunk_size}",
+        f"Hash block size: {settings.hash_block_size}",
+        "",
+        f"Accepted: {accepted}",
+        f"Runtime seconds: {runtime_sec:.3f}",
+        f"Runtime minutes: {runtime_sec / 60.0:.6f}",
+        "",
+        f"Diagnostic manifest: {diagnostic_manifest}",
+        (
+            f"Published canonical manifest: "
+            f"{published_manifest}"
+            if published_manifest is not None
+            else (
+                "Published canonical manifest: "
+                "[UNCHANGED]"
+            )
+        ),
     ]
 
-    adjacency_issues = validate_adjacency(discovered_ranges)
-    boundary_issues = verify_cross_file_boundaries(discovered_ranges)
+    if missing_ranges:
+        lines.extend(
+            [
+                "",
+                "Missing ranges",
+                "--------------",
+            ]
+        )
+        lines.extend(
+            f"{start} - {end}"
+            for start, end in missing_ranges
+        )
 
+    if extra_ranges:
+        lines.extend(
+            [
+                "",
+                "Extra ranges",
+                "------------",
+            ]
+        )
+        lines.extend(
+            f"{start} - {end}"
+            for start, end in extra_ranges
+        )
+
+    if adjacency_issues:
+        lines.extend(
+            [
+                "",
+                "Adjacency issues",
+                "----------------",
+            ]
+        )
+        lines.extend(
+            json.dumps(
+                issue,
+                sort_keys=True,
+            )
+            for issue in adjacency_issues
+        )
+
+    if boundary_issues:
+        lines.extend(
+            [
+                "",
+                "Boundary issues",
+                "---------------",
+            ]
+        )
+        lines.extend(
+            json.dumps(
+                issue,
+                sort_keys=True,
+            )
+            for issue in boundary_issues
+        )
+
+    return "\n".join(lines) + "\n"
+
+
+def print_header(
+    *,
+    run_id: str,
+    settings: VerifierSettings,
+    paths: VerifierPaths,
+) -> None:
+    print("=" * 80)
+    print(
+        f"{VERIFIER_NAME} "
+        f"v{VERIFIER_VERSION}"
+    )
+    print("=" * 80)
+    print(f"Run ID            : {run_id}")
+    print(f"Mode              : {settings.mode}")
+    print(f"Repository root   : {paths.repository_root}")
+    print(f"Ranges directory  : {paths.ranges_dir}")
+    print(
+        f"Expected extent   : "
+        f"{settings.expected_start:,} - "
+        f"{settings.expected_end:,}"
+    )
+    print(
+        f"Range size        : "
+        f"{settings.range_size:,}"
+    )
+    print(
+        f"Full monotonicity : "
+        f"{settings.full_scan}"
+    )
+    print(
+        f"SHA-256 hashing   : "
+        f"{settings.hashing_enabled}"
+    )
+    print(
+        f"Canonical manifest: "
+        f"{paths.canonical_manifest}"
+    )
+    print("=" * 80)
+
+
+def run_verification(
+    *,
+    config: PlatformConfiguration,
+    settings: VerifierSettings,
+) -> int:
+    paths = resolve_paths(config)
+    run_id = make_run_id()
+    started = time.perf_counter()
+
+    print_header(
+        run_id=run_id,
+        settings=settings,
+        paths=paths,
+    )
+
+    if not paths.ranges_dir.is_dir():
+        raise FileNotFoundError(
+            f"Ranges directory not found: "
+            f"{paths.ranges_dir}"
+        )
+
+    expected = expected_ranges(
+        start=settings.expected_start,
+        end=settings.expected_end,
+        range_size=settings.range_size,
+    )
     expected_keys = set(expected)
-    discovered_keys = {
-        (range_file.start, range_file.end)
-        for range_file in discovered_ranges
+
+    physical_files = sorted_range_files(
+        paths.ranges_dir,
+        "primes",
+    )
+    physical_keys = {
+        (
+            range_file.start,
+            range_file.end,
+        )
+        for range_file in physical_files
     }
 
-    missing_ranges = sorted(expected_keys - discovered_keys)
-    extra_ranges = sorted(discovered_keys - expected_keys)
+    missing_ranges = sorted(
+        expected_keys - physical_keys
+    )
+    extra_ranges = sorted(
+        physical_keys - expected_keys
+    )
 
-    total_topology_errors = (
-        len(adjacency_issues)
-        + len(boundary_issues)
-        + len(missing_ranges)
-        + len(extra_ranges)
+    expected_inventory = [
+        RangeFile(
+            path=(
+                paths.ranges_dir
+                / f"primes_{start}_{end}.npy"
+            ),
+            kind="primes",
+            start=start,
+            end=end,
+        )
+        for start, end in expected
+    ]
+
+    adjacency_issues = validate_adjacency(
+        physical_files
     )
 
     print()
     print("Repository topology")
     print("-" * 80)
-    print(f"Physical ranges      : {len(all_discovered_ranges)}")
-    print(f"Expected ranges      : {len(expected)}")
-    print(f"In-scope ranges      : {len(discovered_ranges)}")
-    print(f"Adjacency issues     : {len(adjacency_issues)}")
-    print(f"Boundary issues      : {len(boundary_issues)}")
-    print(f"Missing ranges       : {len(missing_ranges)}")
-    print(f"Extra ranges         : {len(extra_ranges)}")
-    print(f"Total topology errors: {total_topology_errors}")
-
-    if adjacency_issues:
-        print()
-        print("[TOPOLOGY FAIL] Range adjacency problems:")
-        for issue in adjacency_issues:
-            print(f"  - {issue}")
-
-    if boundary_issues:
-        print()
-        print("[TOPOLOGY FAIL] Cross-file prime boundary problems:")
-        for issue in boundary_issues:
-            print(f"  - {issue}")
-
-    if missing_ranges:
-        print()
-        print("[TOPOLOGY FAIL] Missing expected ranges:")
-        for start, end in missing_ranges:
-            print(f"  - {start:,} - {end:,}")
-
-    if extra_ranges:
-        print()
-        print("[TOPOLOGY FAIL] Unexpected extra ranges:")
-        for start, end in extra_ranges:
-            print(f"  - {start:,} - {end:,}")
-
-    if total_topology_errors == 0:
-        print()
-        print(
-            "[TOPOLOGY PASSED] "
-            "Repository range structure and cross-file boundaries are valid."
-        )
-
-    total_passed = 0
-    total_failed = 0
-    total_missing = 0
-
-    for idx, (start, end) in enumerate(expected, start=1):
-        path = RANGES_DIR / f"primes_{start}_{end}.npy"
-
-        print()
-        print("-" * 80)
-        print(f"[{idx}/{len(expected)}] {start:,} - {end:,}")
-
-        if not path.exists():
-            print("[MISSING]")
-            total_missing += 1
-
-            rows.append(
-                {
-                    "verification_mode": mode,
-                    "file_name": path.name,
-                    "n_start": start,
-                    "n_end": end,
-                    "file_size_gb": "0.000000",
-                    "prime_count": "",
-                    "min_prime": "",
-                    "max_prime": "",
-                    "dtype": "",
-                    "sha256": "",
-                    "status": "missing",
-                    "messages": "file_missing",
-                    "verified_at": datetime.now().isoformat(
-                        timespec="seconds"
-                    ),
-                    "verifier_version": VERIFIER_VERSION,
-                }
-            )
-            continue
-
-        file_size_gb = path.stat().st_size / (1024**3)
-
-        try:
-            file_start, file_end = parse_range_from_filename(path)
-
-            if file_start != start or file_end != end:
-                raise ValueError("filename_range_mismatch")
-
-            result = verify_array(
-                path,
-                start,
-                end,
-                full_scan=full_scan,
-            )
-
-            checksum = sha256_file(path) if full_scan else ""
-            status = result["status"]
-
-            if status == "passed":
-                total_passed += 1
-            else:
-                total_failed += 1
-
-            print(
-                f"[{status.upper()}] "
-                f"count={result['prime_count']:,}, "
-                f"min={result['min_prime']}, "
-                f"max={result['max_prime']}, "
-                f"size={file_size_gb:.6f} GB"
-            )
-
-            rows.append(
-                {
-                    "verification_mode": mode,
-                    "file_name": path.name,
-                    "n_start": start,
-                    "n_end": end,
-                    "file_size_gb": f"{file_size_gb:.6f}",
-                    "prime_count": result["prime_count"],
-                    "min_prime": result["min_prime"],
-                    "max_prime": result["max_prime"],
-                    "dtype": result["dtype"],
-                    "sha256": checksum,
-                    "status": status,
-                    "messages": result["messages"],
-                    "verified_at": datetime.now().isoformat(
-                        timespec="seconds"
-                    ),
-                    "verifier_version": VERIFIER_VERSION,
-                }
-            )
-
-        except Exception as exc:
-            total_failed += 1
-            print(f"[FAILED] {exc}")
-
-            rows.append(
-                {
-                    "verification_mode": mode,
-                    "file_name": path.name,
-                    "n_start": start,
-                    "n_end": end,
-                    "file_size_gb": f"{file_size_gb:.6f}",
-                    "prime_count": "",
-                    "min_prime": "",
-                    "max_prime": "",
-                    "dtype": "",
-                    "sha256": "",
-                    "status": "failed",
-                    "messages": str(exc),
-                    "verified_at": datetime.now().isoformat(
-                        timespec="seconds"
-                    ),
-                    "verifier_version": VERIFIER_VERSION,
-                }
-            )
-
-    runtime_sec = time.time() - t0
-
-    total_expected = len(expected)
-    total_found = total_expected - total_missing
-
-    accepted = (
-        total_failed == 0
-        and total_missing == 0
-        and total_topology_errors == 0
-        and total_passed == total_expected
-        and total_found == total_expected
+    print(
+        f"Physical files  : "
+        f"{len(physical_files)}"
+    )
+    print(
+        f"Expected files  : "
+        f"{len(expected_inventory)}"
+    )
+    print(
+        f"Missing ranges  : "
+        f"{len(missing_ranges)}"
+    )
+    print(
+        f"Extra ranges    : "
+        f"{len(extra_ranges)}"
+    )
+    print(
+        f"Adjacency issues: "
+        f"{len(adjacency_issues)}"
     )
 
-    write_manifest(manifest_file, rows)
+    results: list[FileVerification] = []
 
-    write_summary(
-        summary_file,
-        verification_mode=mode,
-        total_expected=total_expected,
-        total_discovered=len(discovered_ranges),
-        total_found=total_found,
-        total_passed=total_passed,
-        total_failed=total_failed,
-        total_missing=total_missing,
-        total_topology_errors=total_topology_errors,
+    for index, range_file in enumerate(
+        expected_inventory,
+        start=1,
+    ):
+        print()
+        print("-" * 80)
+        print(
+            f"[{index}/{len(expected_inventory)}] "
+            f"{range_file.start:,} - "
+            f"{range_file.end:,}"
+        )
+
+        result = verify_one_file(
+            range_file=range_file,
+            settings=settings,
+        )
+        results.append(result)
+
+        if result.passed:
+            print(
+                "[PASSED] "
+                f"count={result.prime_count:,}, "
+                f"min={result.min_prime}, "
+                f"max={result.max_prime}, "
+                f"size="
+                f"{result.file_size_bytes / (1024 ** 3):.9f} GB"
+            )
+        else:
+            print(
+                f"[{result.status.upper()}] "
+                f"{';'.join(result.messages)}"
+            )
+
+    boundary_issues = verify_boundaries(
+        results
+    )
+
+    passed_files = sum(
+        result.passed
+        for result in results
+    )
+    failed_files = sum(
+        result.status == "failed"
+        for result in results
+    )
+    missing_files = sum(
+        result.status == "missing"
+        for result in results
+    )
+
+    totals = VerificationTotals(
+        physical_files=len(physical_files),
+        expected_files=len(expected_inventory),
+        verified_files=len(results),
+        passed_files=passed_files,
+        failed_files=(
+            failed_files + missing_files
+        ),
+        missing_ranges=len(missing_ranges),
+        extra_ranges=len(extra_ranges),
+        adjacency_issues=len(adjacency_issues),
+        boundary_issues=len(boundary_issues),
+    )
+
+    accepted = (
+        totals.physical_files
+        == totals.expected_files
+        and totals.verified_files
+        == totals.expected_files
+        and totals.passed_files
+        == totals.expected_files
+        and totals.failed_files == 0
+        and totals.topology_errors == 0
+    )
+
+    runtime_sec = (
+        time.perf_counter()
+        - started
+    )
+
+    diagnostic_manifest = (
+        diagnostic_manifest_path(
+            metadata_dir=paths.metadata_dir,
+            mode=settings.mode,
+            run_id=run_id,
+            accepted=accepted,
+        )
+    )
+    diagnostic_summary = (
+        diagnostic_summary_path(
+            metadata_dir=paths.metadata_dir,
+            mode=settings.mode,
+            run_id=run_id,
+            accepted=accepted,
+        )
+    )
+
+    atomic_write_csv(
+        diagnostic_manifest,
+        fieldnames=DIAGNOSTIC_MANIFEST_FIELDS,
+        rows=(
+            result.diagnostic_row(
+                settings.mode
+            )
+            for result in results
+        ),
+    )
+
+    published_manifest: Path | None = None
+
+    if settings.mode == "fast":
+        atomic_write_csv(
+            paths.fast_manifest,
+            fieldnames=DIAGNOSTIC_MANIFEST_FIELDS,
+            rows=(
+                result.diagnostic_row(
+                    settings.mode
+                )
+                for result in results
+            ),
+        )
+
+    elif accepted:
+        atomic_write_csv(
+            paths.canonical_manifest,
+            fieldnames=CANONICAL_MANIFEST_FIELDS,
+            rows=(
+                result.canonical_row()
+                for result in results
+            ),
+        )
+        published_manifest = (
+            paths.canonical_manifest
+        )
+
+    summary_text = build_summary(
+        run_id=run_id,
+        settings=settings,
+        paths=paths,
+        totals=totals,
         accepted=accepted,
         runtime_sec=runtime_sec,
-        manifest_file=manifest_file,
+        missing_ranges=missing_ranges,
+        extra_ranges=extra_ranges,
+        adjacency_issues=adjacency_issues,
+        boundary_issues=boundary_issues,
+        published_manifest=published_manifest,
+        diagnostic_manifest=diagnostic_manifest,
+    )
+
+    atomic_write_text(
+        diagnostic_summary,
+        summary_text,
+    )
+
+    if settings.mode == "fast":
+        atomic_write_text(
+            paths.fast_summary,
+            summary_text,
+        )
+
+    elif accepted:
+        atomic_write_text(
+            paths.canonical_summary,
+            summary_text,
+        )
+
+    run_report = {
+        "run_id": run_id,
+        "verifier_version": VERIFIER_VERSION,
+        "verification_mode": settings.mode,
+        "accepted": accepted,
+        "runtime_sec": runtime_sec,
+        "physical_files": totals.physical_files,
+        "expected_files": totals.expected_files,
+        "verified_files": totals.verified_files,
+        "passed_files": totals.passed_files,
+        "failed_files": totals.failed_files,
+        "missing_ranges": totals.missing_ranges,
+        "extra_ranges": totals.extra_ranges,
+        "adjacency_issues": totals.adjacency_issues,
+        "boundary_issues": totals.boundary_issues,
+        "topology_errors": totals.topology_errors,
+        "diagnostic_manifest": str(
+            diagnostic_manifest
+        ),
+        "diagnostic_summary": str(
+            diagnostic_summary
+        ),
+        "canonical_manifest": (
+            str(paths.canonical_manifest)
+            if published_manifest is not None
+            else None
+        ),
+    }
+
+    atomic_write_json(
+        paths.metadata_dir
+        / (
+            f"repository_verification_"
+            f"{run_id}.json"
+        ),
+        run_report,
     )
 
     print()
     print("=" * 80)
-    print("Verification complete.")
-    print(f"Mode:            {mode}")
-    print(f"Physical:        {len(all_discovered_ranges)}")
-    print(f"Expected:        {total_expected}")
-    print(f"In scope:        {len(discovered_ranges)}")
-    print(f"Found:           {total_found}")
-    print(f"Passed:          {total_passed}")
-    print(f"Failed:          {total_failed}")
-    print(f"Missing:         {total_missing}")
-    print(f"Topology errors: {total_topology_errors}")
-    print(f"Manifest:        {manifest_file}")
-    print(f"Summary:         {summary_file}")
+    print("Verification complete")
+    print("=" * 80)
+    print(f"Mode             : {settings.mode}")
+    print(f"Physical files   : {totals.physical_files}")
+    print(f"Expected files   : {totals.expected_files}")
+    print(f"Verified files   : {totals.verified_files}")
+    print(f"Passed files     : {totals.passed_files}")
+    print(f"Failed files     : {totals.failed_files}")
+    print(f"Missing ranges   : {totals.missing_ranges}")
+    print(f"Extra ranges     : {totals.extra_ranges}")
+    print(f"Adjacency issues : {totals.adjacency_issues}")
+    print(f"Boundary issues  : {totals.boundary_issues}")
+    print(f"Topology errors  : {totals.topology_errors}")
+    print(f"Runtime          : {runtime_sec / 60.0:.3f} min")
+    print(
+        f"Diagnostic       : "
+        f"{diagnostic_manifest}"
+    )
+
+    if published_manifest is not None:
+        print(
+            f"Canonical manifest: "
+            f"{published_manifest}"
+        )
+    else:
+        print(
+            "Canonical manifest: "
+            "[UNCHANGED]"
+        )
+
     print("=" * 80)
 
     if accepted:
@@ -577,21 +1199,120 @@ def main() -> None:
         print("=" * 80)
         print("[ACCEPTED]")
         print(
-            f"PrimeNet prime repository satisfies the {mode} "
-            "verification contract."
+            "PrimeNet prime repository satisfies "
+            f"the {settings.mode} verification contract."
         )
         print("=" * 80)
-        return
+        return 0
 
     print()
     print("=" * 80)
     print("[REJECTED]")
-    print("PrimeNet prime repository failed validation.")
-    print("Review failed files, missing ranges, and topology errors.")
+    print(
+        "PrimeNet prime repository failed "
+        "verification."
+    )
+    print(
+        "The canonical manifest was not replaced."
+    )
     print("=" * 80)
 
-    sys.exit(1)
+    return 1
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Verify the canonical PrimeNet "
+            "prime repository."
+        )
+    )
+
+    parser.add_argument(
+        "--mode",
+        choices=("fast", "full"),
+        default="full",
+        help=(
+            "Verification mode. Fast skips "
+            "full monotonic scans and SHA-256. "
+            "Default: full."
+        ),
+    )
+
+    parser.add_argument(
+        "--hash-block-size",
+        type=int,
+        default=DEFAULT_HASH_BLOCK_SIZE,
+        help=(
+            "SHA-256 read block size in bytes. "
+            f"Default: {DEFAULT_HASH_BLOCK_SIZE}"
+        ),
+    )
+
+    parser.add_argument(
+        "--monotonic-chunk-size",
+        type=int,
+        default=DEFAULT_MONOTONIC_CHUNK_SIZE,
+        help=(
+            "Elements per chunk for complete "
+            "monotonic verification. "
+            f"Default: "
+            f"{DEFAULT_MONOTONIC_CHUNK_SIZE}"
+        ),
+    )
+
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+
+    try:
+        if args.hash_block_size <= 0:
+            raise ValueError(
+                "hash-block-size must be > 0."
+            )
+
+        if args.monotonic_chunk_size <= 0:
+            raise ValueError(
+                "monotonic-chunk-size must be > 0."
+            )
+
+        config = load_platform_config()
+
+        settings = VerifierSettings(
+            mode=args.mode,
+            expected_start=config.repository_extent.start,
+            expected_end=config.repository_extent.end,
+            range_size=config.campaign.range_size,
+            segment_size=config.campaign.segment_size,
+            hash_block_size=args.hash_block_size,
+            monotonic_chunk_size=args.monotonic_chunk_size,
+        )
+
+        return run_verification(
+            config=config,
+            settings=settings,
+        )
+
+    except (
+        FileNotFoundError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        print(
+            f"[FAILED] {exc}",
+            file=sys.stderr,
+        )
+        return 2
+
+    except Exception as exc:
+        print(
+            f"[FAILED] {exc}",
+            file=sys.stderr,
+        )
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
