@@ -14,11 +14,11 @@ Design:
 Run:
 
     cd C:\\PrimeNet\\Platform
-    py -m core.drive_prime_repository
+    py -m Platform.core.drive_prime_repository
 
 or:
 
-    py -m core.drive_prime_repository --config config/repository_build.yaml
+    py -m Platform.core.drive_prime_repository --config config/repository_build.yaml
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import yaml
-from core.platform_config import load_platform_config
+from Platform.core.platform_config import load_platform_config
 
 PLATFORM_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG_PATH = PLATFORM_ROOT / "config" / "repository_build.yaml"
@@ -95,7 +95,7 @@ def run_build_prime_range(
     cmd = [
         sys.executable,
         "-m",
-        "core.build_prime_range",
+        "Platform.core.build_prime_range",
         "--start",
         str(start),
         "--end",

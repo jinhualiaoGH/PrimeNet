@@ -22,8 +22,8 @@ Run from:
 
 Commands:
 
-    py -m core.verify_repository --mode fast
-    py -m core.verify_repository --mode full
+    py -m Platform.core.verify_repository --mode fast
+    py -m Platform.core.verify_repository --mode full
 """
 
 from __future__ import annotations
@@ -39,8 +39,8 @@ from pathlib import Path
 
 import numpy as np
 
-from core.platform_config import load_platform_config
-from core.range_files import sorted_range_files, validate_adjacency
+from Platform.core.platform_config import load_platform_config
+from Platform.core.range_files import sorted_range_files, validate_adjacency
 
 
 VERIFIER_NAME = "PrimeNet Repository Verifier"

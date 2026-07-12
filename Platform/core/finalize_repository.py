@@ -9,7 +9,7 @@ Creates:
 
 Run:
     cd C:\\PrimeNet\\Platform
-    py -m core.finalize_repository
+    py -m Platform.core.finalize_repository
 """
 
 from __future__ import annotations
@@ -24,8 +24,8 @@ from datetime import datetime
 from pathlib import Path
 
 
-from core.platform_config import load_platform_config
-from core.range_files import sorted_range_files
+from Platform.core.platform_config import load_platform_config
+from Platform.core.range_files import sorted_range_files
 
 
 CONFIG = load_platform_config()

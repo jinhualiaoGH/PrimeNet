@@ -16,8 +16,8 @@ from typing import Iterator
 
 import numpy as np
 
-from core.platform_config import load_platform_config
-from core.range_files import sorted_range_files
+from Platform.core.platform_config import load_platform_config
+from Platform.core.range_files import sorted_range_files
 
 
 CONFIG = load_platform_config()

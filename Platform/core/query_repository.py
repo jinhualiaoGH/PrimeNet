@@ -8,7 +8,7 @@ Provides fast indexed access to:
 
 Run:
     cd C:\\PrimeNet\\Platform
-    py -m core.query_repository
+    py -m Platform.core.query_repository
 """
 
 from __future__ import annotations
@@ -21,8 +21,8 @@ from typing import Any
 
 import numpy as np
 
-from core.platform_config import load_platform_config
-from core.range_files import sorted_range_files
+from Platform.core.platform_config import load_platform_config
+from Platform.core.range_files import sorted_range_files
 
 
 class PrimeRepository:

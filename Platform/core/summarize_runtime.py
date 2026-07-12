@@ -5,7 +5,7 @@ import json
 import statistics
 from datetime import datetime
 from pathlib import Path
-from core.platform_config import load_platform_config
+from Platform.core.platform_config import load_platform_config
 
 
 CONFIG = load_platform_config()

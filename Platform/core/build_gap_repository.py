@@ -22,12 +22,12 @@ from pathlib import Path
 
 import numpy as np
 
-from core.range_files import sorted_range_files
+from Platform.core.range_files import sorted_range_files
 
 
 VERSION = "3.0.0"
 
-from core.platform_config import load_platform_config
+from Platform.core.platform_config import load_platform_config
 
 
 CONFIG = load_platform_config()

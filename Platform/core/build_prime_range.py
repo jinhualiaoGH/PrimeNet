@@ -5,7 +5,7 @@ PrimeNet Repository Builder
 Official Stage 1 instrument for building one prime range file.
 
 Example:
-    py -m core.build_prime_range --start 1 --end 10000000000 --overwrite
+    py -m Platform.core.build_prime_range --start 1 --end 10000000000 --overwrite
 
 Output:
     E:\\PrimeNet\\Repository\\ranges\\primes_START_END.npy
@@ -27,7 +27,7 @@ import numpy as np
 # Default repository configuration
 # =============================================================================
 
-from core.platform_config import load_platform_config
+from Platform.core.platform_config import load_platform_config
 
 
 CONFIG = load_platform_config()

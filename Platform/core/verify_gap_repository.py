@@ -33,7 +33,7 @@ Engineering contract
 
 Run:
     cd C:\\PrimeNet\\Platform
-    py -m core.verify_gap_repository
+    py -m Platform.core.verify_gap_repository
 """
 
 from __future__ import annotations
@@ -46,8 +46,8 @@ from pathlib import Path
 
 import numpy as np
 
-from core.range_files import sorted_range_files, validate_adjacency
-from core.platform_config import load_platform_config
+from Platform.core.range_files import sorted_range_files, validate_adjacency
+from Platform.core.platform_config import load_platform_config
 
 
 VERSION = "2.1.0"

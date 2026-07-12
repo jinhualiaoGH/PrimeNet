@@ -3,7 +3,7 @@ PrimeNet Query Window Test v1.0.0
 
 Run:
     cd C:\\PrimeNet\\Platform
-    py -m core.query_window_test
+    py -m Platform.core.query_window_test
 """
 
 from __future__ import annotations
