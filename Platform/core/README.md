@@ -1,13 +1,10 @@
-# PrimeNet Platform Repository Engine
+# PrimeNet Platform Core
 
-This directory is the `Platform.core` package. It is distinct from the root `core` framework package.
+`Platform.core` is the canonical infrastructure layer for the PrimeNet
+repository and prime-index coordinate system.
 
-Run modules from `C:\PrimeNet`:
+It is distinct from any historical or experimental root-level `core`
+package. All internal imports must use the fully qualified package name:
 
-```powershell
-py -m Platform.core.verify_repository --mode fast
-py -m Platform.core.verify_gap_repository
-py -m Platform.core.query_repository
-```
-
-Internal imports must use `from Platform.core...`.
+```python
+from Platform.core...
