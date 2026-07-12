@@ -57,8 +57,8 @@ Artifact ownership
 ------------------
 This module is the certification authority for:
 
-    gap_repository_u16_v3_manifest.csv
-    gap_repository_u16_v3_verification_summary.txt
+    gap_repository_manifest.csv
+    gap_repository_verification_summary.txt
 
 The canonical manifest is atomically replaced only after a complete,
 accepted full verification.
@@ -386,19 +386,19 @@ def resolve_paths(
         metadata_dir=metadata_dir,
         canonical_manifest=(
             metadata_dir
-            / "gap_repository_u16_v3_manifest.csv"
+            / "gap_repository_manifest.csv"
         ),
         canonical_summary=(
             metadata_dir
-            / "gap_repository_u16_v3_verification_summary.txt"
+            / "gap_repository_verification_summary.txt"
         ),
         fast_manifest=(
             metadata_dir
-            / "gap_repository_u16_v3_fast_manifest.csv"
+            / "gap_repository_fast_manifest.csv"
         ),
         fast_summary=(
             metadata_dir
-            / "gap_repository_u16_v3_fast_verification_summary.txt"
+            / "gap_repository_fast_verification_summary.txt"
         ),
     )
 
@@ -1386,7 +1386,7 @@ def diagnostic_manifest_path(
     return (
         metadata_dir
         / (
-            "gap_repository_u16_v3_"
+            "gap_repository_"
             f"{mode}_verification_"
             f"{state}_{run_id}.csv"
         )
@@ -1409,7 +1409,7 @@ def diagnostic_summary_path(
     return (
         metadata_dir
         / (
-            "gap_repository_u16_v3_"
+            "gap_repository_"
             f"{mode}_verification_"
             f"{state}_{run_id}.txt"
         )
@@ -2254,7 +2254,7 @@ def run_verification(
     atomic_write_json(
         paths.metadata_dir
         / (
-            "gap_repository_u16_v3_"
+            "gap_repository_"
             f"verification_{run_id}.json"
         ),
         {
@@ -2415,7 +2415,7 @@ def run_verification(
         print("=" * 80)
         print("[ACCEPTED]")
         print(
-            "PrimeNet gaps_u16_v3 satisfies "
+            "PrimeNet canonical gap repository satisfies "
             f"the {settings.mode} "
             "index-coordinate contract."
         )

@@ -124,7 +124,7 @@ Principal directories include:
 
 ```text
 ranges\
-gaps_u16_v3\
+gaps\
 metadata\
 logs\
 observations\
@@ -155,7 +155,7 @@ All traversal must parse numeric range coordinates. Lexical filename ordering is
 Accepted gap files are stored under:
 
 ```text
-E:\PrimeNet\Repository\gaps_u16_v3
+E:\PrimeNet\Repository\gaps
 ```
 
 They use `uint16` arrays and filenames of the form:

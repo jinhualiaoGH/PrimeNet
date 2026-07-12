@@ -15,7 +15,7 @@ The default summary considers these logs when present:
     repository_driver_runtime.csv
         Owned by drive_prime_repository.py.
 
-    gap_u16_v3_runtime.csv
+    gap_runtime.csv
         Owned by build_gap_repository.py.
 
 Legacy input
@@ -262,7 +262,7 @@ def resolve_paths(
         ),
         gap_log=(
             logs_dir
-            / "gap_u16_v3_runtime.csv"
+            / "gap_runtime.csv"
         ),
         legacy_builder_log=(
             logs_dir

@@ -55,7 +55,7 @@ REQUIRED_DIRECTORIES = [
     PRIMENET_ROOT / "runs",
     REPOSITORY_ROOT,
     REPOSITORY_ROOT / "ranges",
-    REPOSITORY_ROOT / "gaps_u16_v3",
+    REPOSITORY_ROOT / "gaps",
     REPOSITORY_ROOT / "metadata",
     REPOSITORY_ROOT / "observations" / "twin_primes",
 ]
@@ -94,7 +94,7 @@ REQUIRED_FILES = [
     PRIMENET_ROOT / "observatories" / "twin_primes" / "__init__.py",
     PRIMENET_ROOT / "observatories" / "twin_primes" / "count_twins.py",
     PRIMENET_ROOT / "observatories" / "twin_primes" / "validation_package" / "README.md",
-    REPOSITORY_ROOT / "metadata" / "gap_repository_u16_v3_manifest.csv",
+    REPOSITORY_ROOT / "metadata" / "gap_repository_manifest.csv",
     REPOSITORY_ROOT / "observations" / "twin_primes" / "twin_prime_census_1_3T.csv",
     REPOSITORY_ROOT / "observations" / "twin_primes" / "twin_prime_census_1_3T_summary.json",
 ]
@@ -564,7 +564,7 @@ def check_obsolete_text_references(checks: list[AuditCheck]) -> None:
 
 def check_numeric_repository_order(checks: list[AuditCheck]) -> None:
     prime_dir = REPOSITORY_ROOT / "ranges"
-    gap_dir = REPOSITORY_ROOT / "gaps_u16_v3"
+    gap_dir = REPOSITORY_ROOT / "gaps"
 
     prime_failures: list[str] = []
     gap_failures: list[str] = []

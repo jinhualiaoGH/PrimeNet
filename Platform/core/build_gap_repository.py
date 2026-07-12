@@ -87,8 +87,8 @@ def resolve_paths() -> BuilderPaths:
         output_dir=paths.gaps_dir,
         metadata_dir=paths.metadata_dir,
         logs_dir=paths.logs_dir,
-        manifest_csv=paths.metadata_dir / "gap_repository_u16_v3_manifest.csv",
-        runtime_csv=paths.logs_dir / "gap_u16_v3_runtime.csv",
+        manifest_csv=paths.metadata_dir / "gap_build_history.csv",
+        runtime_csv=paths.logs_dir / "gap_runtime.csv",
     )
 
 
