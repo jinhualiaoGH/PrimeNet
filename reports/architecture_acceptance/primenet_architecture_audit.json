@@ -3,9 +3,9 @@
   "audit": "Architecture Acceptance Audit",
   "version": "1.1.0",
   "status": "ACCEPTED",
-  "started_at_utc": "2026-07-11T12:24:20.167943+00:00",
-  "completed_at_utc": "2026-07-11T12:24:21.473601+00:00",
-  "runtime_seconds": 1.3053220000001602,
+  "started_at_utc": "2026-07-13T00:23:03.553567+00:00",
+  "completed_at_utc": "2026-07-13T00:23:09.237070+00:00",
+  "runtime_seconds": 5.683036600006744,
   "primenet_root": "C:\\PrimeNet",
   "repository_root": "E:\\PrimeNet\\Repository",
   "checks_total": 67,
@@ -133,7 +133,7 @@
       "details": ""
     },
     {
-      "name": "directory:E:\\PrimeNet\\Repository\\gaps_u16_v3",
+      "name": "directory:E:\\PrimeNet\\Repository\\gaps",
       "category": "filesystem",
       "passed": true,
       "expected": "directory exists",
@@ -421,7 +421,7 @@
       "details": ""
     },
     {
-      "name": "file:E:\\PrimeNet\\Repository\\metadata\\gap_repository_u16_v3_manifest.csv",
+      "name": "file:E:\\PrimeNet\\Repository\\metadata\\gap_repository_manifest.csv",
       "category": "filesystem",
       "passed": true,
       "expected": "file exists",
