@@ -25,7 +25,27 @@ from core.paths import Paths
 
 from Platform.core.query_repository import PrimeQueryRepository
 from Platform.core.range_files import RangeFile, validate_adjacency
-from Platform.core.repository import PrimeRepository
+from Platform.core.repository import GapRepository, PrimeRepository
+
+
+@dataclass(frozen=True)
+class GapRangeFile:
+    """
+    Compatibility record used by existing PrimeNet observatories.
+
+    The canonical Platform layer owns physical gap-file discovery and
+    validation. This record preserves a stable Observatory-facing
+    interface while scientific consumers are migrated incrementally.
+    """
+
+    file_path: Path
+    start: int
+    end: int
+    size_bytes: int
+
+    @property
+    def name(self) -> str:
+        return self.file_path.name
 
 
 @dataclass(frozen=True)
@@ -68,6 +88,7 @@ class Repository:
         self.logger = logger
 
         self._prime_repository: PrimeRepository | None = None
+        self._gap_repository: GapRepository | None = None
         self._query_repository: PrimeQueryRepository | None = None
 
     @property
@@ -79,6 +100,16 @@ class Repository:
             self._prime_repository = PrimeRepository()
 
         return self._prime_repository
+
+    @property
+    def gap_repository(self) -> GapRepository:
+        """
+        Return the canonical physical gap repository.
+        """
+        if self._gap_repository is None:
+            self._gap_repository = GapRepository()
+
+        return self._gap_repository
 
     @property
     def query_repository(self) -> PrimeQueryRepository:
@@ -98,6 +129,66 @@ class Repository:
         """
         return [
             self.prime_repository.ranges_dir,
+        ]
+
+    def list_gap_files(self) -> list[GapRangeFile]:
+        """
+        Return canonical gap partitions through the compatibility
+        record expected by scientific observatories.
+        """
+        records: list[GapRangeFile] = []
+
+        for range_file in self.gap_repository.range_files():
+            try:
+                size_bytes = range_file.path.stat().st_size
+            except OSError:
+                size_bytes = 0
+
+            records.append(
+                GapRangeFile(
+                    file_path=range_file.path,
+                    start=range_file.start,
+                    end=range_file.end,
+                    size_bytes=size_bytes,
+                )
+            )
+
+        return records
+
+    def validate_gap_ranges(
+        self,
+        files: list[GapRangeFile],
+    ) -> list[str]:
+        """
+        Validate Observatory-facing gap records using the canonical
+        Platform adjacency contract.
+        """
+        if not files:
+            return [
+                "No gap files found.",
+            ]
+
+        range_files = [
+            RangeFile(
+                path=record.file_path,
+                kind="gaps",
+                start=record.start,
+                end=record.end,
+            )
+            for record in files
+        ]
+
+        issues = validate_adjacency(range_files)
+
+        return [
+            (
+                f"Range {issue['issue_type'].lower()}: "
+                f"{issue['previous']} ends at "
+                f"{issue['previous_end']}, "
+                f"{issue['current']} starts at "
+                f"{issue['current_start']}"
+            )
+            for issue in issues
         ]
 
     def list_prime_files(self) -> list[PrimeRangeFile]:
