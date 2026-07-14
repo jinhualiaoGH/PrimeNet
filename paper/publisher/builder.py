@@ -15,7 +15,12 @@ def main():
  print('='*66); print('PrimeNet Publisher v2.2'); print('='*66); print(f'Root:  {root}'); print(f'Title: {config.get("title")}'); print(f'Theme: {theme}')
  stats=load_repository_stats(root,config); print(f'Repository statistics source: {stats.get("_source")}')
  fig_dir=root/config['paths']['figures']; tab_dir=root/config['paths']['tables']; ref_dir=root/config['paths']['references']; out_dir=root/config['paths']['output']
- if config.get('outputs',{}).get('figures',True): build_figures(fig_dir,theme)
+ if config.get('outputs', {}).get('figures', True):
+     figures=build_figures(
+         root / config["paths"]["figures"],
+         config.get("theme", "primenet_light"),
+         stats,
+     )
  tables=build_tables(tab_dir,stats) if config.get('outputs',{}).get('tables',True) else {}
  write_reference_plan(ref_dir/'reference_plan.md')
  if config.get('outputs',{}).get('docx',True): print(f'Generated integrated DOCX: {build_docx(root,config,stats,tables)}')

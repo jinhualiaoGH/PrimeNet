@@ -15,4 +15,5 @@ TABLE_CAPTIONS={
  'table03_architectural_components':'Table 3. PrimeNet Architectural Components.',
  'table04_repository_statistics':'Table 4. Repository Statistics as Architectural Evidence.',
  'table05_software_modules':'Table 5. Software Architecture Subsystems.',
- 'table06_reproducibility_features':'Table 6. Reproducibility Features.'}
+ 'table06_reproducibility_features':'Table 6. Reproducibility Features.',
+ 'table07_observational_performance':'Table 7. Accepted Twin-Prime Census Performance Measurements.'}

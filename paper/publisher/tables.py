@@ -14,7 +14,24 @@ def make_tables(stats):
  'table03_architectural_components':[['Component','Primary Responsibility'],['Prime Space','Canonical observational coordinate framework'],['Repository','Persistent computational assets'],['Observatory','Reusable computational investigation'],['Observation Session','Provenance and execution context'],['Product','Persistent observational output'],['Atlas','Curated collection of related products'],['Registry','Discovery and lifecycle management'],['Publisher','Publication assets and manuscript generation']],
  'table04_repository_statistics':[['Metric','Value'],['Repository interval',stats['repository_interval']],['Verified primes',stats['verified_prime_numbers']],['Largest stored prime',stats['largest_stored_prime']],['Repository segments',stats['repository_segments']],['Segment size',stats['segment_size']],['Verification result',stats['repository_verification']]],
  'table05_software_modules':[['Subsystem','Responsibility'],['Repository construction services','Deterministic generation of repository segments'],['Repository management services','Inventory, catalogs, and lifecycle management'],['Verification services','Independent repository validation'],['Metadata services','Repository and product description'],['Observatory execution framework','Run reusable computational investigations'],['Product management','Preserve and organize persistent outputs'],['Registry services','Discover observatories and products'],['Publisher services','Generate publication figures, tables, manuscript drafts, and publication manifests']],
- 'table06_reproducibility_features':[['Feature','Purpose'],['Deterministic construction','Repeatable repository generation'],['Independent verification','Validate repository integrity'],['Structured metadata','Preserve repository and product context'],['Observation sessions','Preserve execution provenance'],['Persistent products','Enable reuse without recomputation'],['Registry services','Support discoverability and consistency'],['Publication manifest','Preserve publication build provenance']],}
+ 'table06_reproducibility_features':[['Feature','Purpose'],['Deterministic construction','Repeatable repository generation'],['Independent verification','Validate repository integrity'],['Structured metadata','Preserve repository and product context'],['Observation sessions','Preserve execution provenance'],['Persistent products','Enable reuse without recomputation'],['Registry services','Support discoverability and consistency'],['Publication manifest','Preserve publication build provenance']],
+ 'table07_observational_performance':[
+     ['Metric','Accepted Measurement'],
+     ['Scientific domain',stats['twin_numeric_domain']],
+     ['Repository partitions',stats['twin_partitions']],
+     ['Total gaps analyzed',stats['twin_total_gaps']],
+     ['Twin-prime events',stats['twin_total_events']],
+     ['Global twin density',stats['twin_global_density']],
+     ['End-to-end runtime',f"{stats['twin_end_to_end_runtime_min']} min"],
+     ['Runtime accounted for',stats['twin_runtime_accounted_percent']],
+     ['Conservative steady-state partitions',stats['steady_partitions']],
+     ['Steady-state gaps analyzed',stats['steady_total_gaps']],
+     ['Mean partition runtime',f"{stats['steady_mean_runtime_sec']} sec"],
+     ['Median partition runtime',f"{stats['steady_median_runtime_sec']} sec"],
+     ['Runtime coefficient of variation',stats['steady_runtime_cv_percent']],
+     ['Runtime P95',f"{stats['steady_p95_runtime_sec']} sec"],
+     ['Sustained throughput',f"{stats['steady_gaps_per_sec']} gaps/sec"],
+ ],}
 def _write_csv(path,rows):
  with open(path,'w',newline='',encoding='utf-8') as f: csv.writer(f).writerows(rows)
 def _write_markdown(path,rows):
