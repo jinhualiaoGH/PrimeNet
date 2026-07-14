@@ -1,6 +1,6 @@
-# PrimeNet Publication Style Guide v2.2
+# PrimeNet Publication Style Guide v2.3
 
-v2.2 focuses on manuscript integration. The generated DOCX should read like a paper, not merely an appendix of assets.
+v2.3 focuses on manuscript integration. The generated DOCX should read like a paper, not merely an appendix of assets.
 
 ## Rules
 

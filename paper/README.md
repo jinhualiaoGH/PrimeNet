@@ -1,6 +1,6 @@
-# PrimeNet Publisher v2.2
+# PrimeNet Publisher v2.3
 
-PrimeNet Publisher v2.2 is the manuscript-integration release.
+PrimeNet Publisher v2.3 is the manuscript-integration release.
 
 ## Improvements from v2.1
 

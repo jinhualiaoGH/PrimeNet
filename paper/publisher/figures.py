@@ -28,7 +28,7 @@ def fig10_ecosystem(outdir,theme_name='primenet_light'):
  d=Diagram('PrimeNet Scientific Ecosystem','Infrastructure enables future computational investigations',theme_name=theme_name); nodes=horizontal_stack(['Repository','Observatories','Products','Atlases','Future\nResearchers'],.07,.52,.15,.10,.04,'eco'); nodes[0].kind='foundation'; nodes[-1].kind='evidence'; d.add_nodes(nodes,8); [d.connect_nodes(a,b,'right','left') for a,b in zip(nodes[:-1],nodes[1:])]; base=d.add_node(Node('base','Reusable Foundation for Future Investigation',.25,.20,.50,.09,'foundation'),9); d.connect_nodes(nodes[-1],base); d.note('PrimeNet succeeds if future researchers spend less time rebuilding infrastructure and more time doing science.'); d.save(outdir,'fig10_ecosystem')
 FIGURES=[fig01_evolution,fig02_architecture,fig03_prime_space,fig04_repository,fig05_construction,fig06_observatory,fig07_software,fig08_validation,fig09_growth,fig10_ecosystem]
 def build_all(outdir,theme_name='primenet_light',stats=None):
- print('Generating figures with Figure Engine 2.2...')
+ print('Generating figures with Figure Engine 2.3...')
  for i,fn in enumerate(FIGURES,1):
   print(f'  [{i}/{len(FIGURES)}] {fn.__name__}')
   if fn is fig08_validation:

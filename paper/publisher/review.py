@@ -10,11 +10,11 @@ def review_publication(root,config,tables):
    if p.exists(): check(f'Figure {ext.upper()} nontrivial size: {fig}',p.stat().st_size>minsize,f'{p.stat().st_size} bytes')
  for t in tables:
   for ext in ['csv','md','docx']: check(f'Table {ext.upper()} exists: {t}',(table_dir/f'{t}.{ext}').exists())
- docs=list(out_dir.glob('PrimeNet_Architecture_Publication_Draft_v2_2.docx')); check('Integrated Draft 2 DOCX exists',bool(docs));
+ docs=list(out_dir.glob('PrimeNet_Architecture_Publication_Draft_v2_3.docx')); check('Integrated Draft 2 DOCX exists',bool(docs));
  if docs: check('Integrated Draft 2 DOCX nontrivial size',docs[0].stat().st_size>150000,f'{docs[0].stat().st_size} bytes')
  secs=section_paragraphs({}); check('Manuscript sections present',len(secs)>=10,f'{len(secs)} sections configured')
  status='PASSED' if all(c['status']=='PASSED' for c in checks) else 'FAILED'
- lines=['='*60,'PrimeNet Publication Verification v2.2','='*60]
+ lines=['='*60,'PrimeNet Publication Verification v2.3','='*60]
  for c in checks:
   sym='OK' if c['status']=='PASSED' else 'FAIL'; det=f" - {c['detail']}" if c.get('detail') else ''; lines.append(f'[{sym}] {c["check"]}{det}')
  lines += ['='*60,f'Overall Status: {status}','='*60]

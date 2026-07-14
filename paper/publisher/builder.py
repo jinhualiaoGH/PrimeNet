@@ -12,7 +12,7 @@ from .captions import FIGURE_CAPTIONS
 from .manuscript_source import section_paragraphs
 def main():
  root=Path(__file__).resolve().parents[1]; config=load_config(root); ensure_dirs(root,config); theme=config.get('theme',{}).get('name','primenet_light')
- print('='*66); print('PrimeNet Publisher v2.2'); print('='*66); print(f'Root:  {root}'); print(f'Title: {config.get("title")}'); print(f'Theme: {theme}')
+ print('='*66); print('PrimeNet Publisher v2.3'); print('='*66); print(f'Root:  {root}'); print(f'Title: {config.get("title")}'); print(f'Theme: {theme}')
  stats=load_repository_stats(root,config); print(f'Repository statistics source: {stats.get("_source")}')
  fig_dir=root/config['paths']['figures']; tab_dir=root/config['paths']['tables']; ref_dir=root/config['paths']['references']; out_dir=root/config['paths']['output']
  if config.get('outputs', {}).get('figures', True):

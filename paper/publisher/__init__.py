@@ -1,2 +1,2 @@
-"""PrimeNet Publisher v2.2."""
-__version__ = "2.2.0"
+"""PrimeNet Publisher v2.3."""
+__version__ = "2.3.0"

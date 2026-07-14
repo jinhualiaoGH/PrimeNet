@@ -67,4 +67,4 @@ def build_docx(root,config,stats,tables):
   cap=doc.add_paragraph(TABLE_CAPTIONS.get(name,name)); cap.paragraph_format.keep_with_next=True
   for rr in cap.runs: rr.bold=True
   _add_table(doc,rows,table_font); doc.add_paragraph()
- out=out_dir/'PrimeNet_Architecture_Publication_Draft_v2_2.docx'; doc.save(out); return out
+ out=out_dir/'PrimeNet_Architecture_Publication_Draft_v2_3.docx'; doc.save(out); return out
