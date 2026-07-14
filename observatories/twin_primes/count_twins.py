@@ -8,7 +8,7 @@ Twin-prime event:
     g(i) = 2
 
 Input:
-    Accepted gaps_u16_v3 repository, 1 through 3T.
+    Canonical accepted PrimeNet gap repository, 1 through 3T.
 
 Outputs:
     CSV partition census
@@ -26,15 +26,14 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-import numpy as np
-
-from Platform.core.range_files import sorted_range_files
+from core.config import Configuration
+from core.paths import Paths
+from core.repository import Repository
 
 
 VERSION = "1.0.0"
 
 REPOSITORY_ROOT = Path(r"E:\PrimeNet\Repository")
-GAP_DIR = REPOSITORY_ROOT / "gaps_u16_v3"
 
 OUTPUT_DIR = REPOSITORY_ROOT / "observations" / "twin_primes"
 
@@ -59,18 +58,31 @@ def main() -> None:
     print("=" * 80)
     print("Scientific observable : twin-prime events")
     print("Event definition      : g(i) = 2")
-    print("Repository            : accepted gaps_u16_v3")
+    print("Repository            : canonical accepted gap repository")
     print("Numeric domain        : 1 - 3,000,000,000,000")
     print("=" * 80)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    gap_files = sorted_range_files(GAP_DIR, "gaps")
+    configuration = Configuration()
+    paths = Paths(configuration)
+
+    with Repository(configuration, paths) as repository:
+        gap_files = repository.list_gap_files()
+        range_issues = repository.validate_gap_ranges(gap_files)
+        gap_repository = repository.gap_repository
+        canonical_gap_dir = gap_repository.gaps_dir
 
     if len(gap_files) != EXPECTED_GAP_FILES:
         raise RuntimeError(
             f"Expected {EXPECTED_GAP_FILES} gap files, "
             f"found {len(gap_files)}"
+        )
+
+    if range_issues:
+        raise RuntimeError(
+            "Canonical gap repository topology validation failed:\n"
+            + "\n".join(range_issues)
         )
 
     rows = []
@@ -84,10 +96,27 @@ def main() -> None:
     for index, rf in enumerate(gap_files, start=1):
         t0 = time.perf_counter()
 
-        gaps = np.load(rf.path, mmap_mode="r")
+        block = gap_repository.load_block(index - 1)
+        gaps = block.gaps
 
-        gap_count = int(gaps.size)
-        twin_count = int(np.count_nonzero(gaps == TWIN_GAP))
+        if block.path != rf.file_path:
+            raise RuntimeError(
+                "Canonical gap block/path mismatch: "
+                f"record={rf.file_path}, block={block.path}"
+            )
+
+        if (
+            block.start != rf.start
+            or block.end != rf.end
+        ):
+            raise RuntimeError(
+                "Canonical gap block/range mismatch: "
+                f"record={rf.start}-{rf.end}, "
+                f"block={block.start}-{block.end}"
+            )
+
+        gap_count = block.count
+        twin_count = int((gaps == TWIN_GAP).sum())
 
         total_gaps += gap_count
         total_twins += twin_count
@@ -165,7 +194,7 @@ def main() -> None:
         "project": "PrimeNet",
         "instrument": "Twin Prime Census",
         "version": VERSION,
-        "repository": str(GAP_DIR),
+        "repository": str(canonical_gap_dir),
         "repository_status": "ACCEPTED",
         "numeric_domain_start": 1,
         "numeric_domain_end": 3_000_000_000_000,
