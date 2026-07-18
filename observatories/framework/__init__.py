@@ -13,6 +13,8 @@ from .writer import (
     ObservationWriteResult,
 )
 
+from .matrix_observation_builder import build_matrix_observation
+
 __all__ = [
     "CoordinateRange",
     "DEFAULT_FILENAME",
@@ -26,4 +28,5 @@ __all__ = [
     "RANGE_SEMANTICS",
     "SCHEMA_VERSION",
     "SOFTWARE_NAME",
+    "build_matrix_observation",
 ]
