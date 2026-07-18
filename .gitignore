@@ -102,3 +102,4 @@ archive/installation_backups/
 backup/
 cache/
 tmp/
+publication/output/backup*/
