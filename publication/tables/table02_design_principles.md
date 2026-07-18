@@ -1,0 +1,8 @@
+| Design Principle | Architectural Realization |
+| --- | --- |
+| Observation before explanation | Repository + Observatory Framework |
+| Persistent repository architecture | Verified persistent repository segments |
+| Reproducibility by design | Deterministic construction + independent verification |
+| Canonical coordinate system | Prime Space and prime index |
+| Separation of responsibilities | Repository / Observatory / Product / Registry layers |
+| Extensibility through modular architecture | New observatories and products can be added incrementally |

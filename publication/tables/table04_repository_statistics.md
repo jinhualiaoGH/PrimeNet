@@ -1,0 +1,8 @@
+| Metric | Value |
+| --- | --- |
+| Repository interval | unavailable |
+| Verified primes | unavailable |
+| Largest stored prime | unavailable |
+| Repository segments | unavailable |
+| Segment size | unavailable |
+| Verification result | unavailable |

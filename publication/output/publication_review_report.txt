@@ -1,0 +1,67 @@
+============================================================
+PrimeNet Publication Verification v2.3
+============================================================
+[OK] Figure PNG exists: fig01_evolution
+[OK] Figure PNG nontrivial size: fig01_evolution - 125798 bytes
+[OK] Figure SVG exists: fig01_evolution
+[OK] Figure SVG nontrivial size: fig01_evolution - 62093 bytes
+[OK] Figure PNG exists: fig02_architecture
+[OK] Figure PNG nontrivial size: fig02_architecture - 154806 bytes
+[OK] Figure SVG exists: fig02_architecture
+[OK] Figure SVG nontrivial size: fig02_architecture - 53230 bytes
+[OK] Figure PNG exists: fig03_prime_space
+[OK] Figure PNG nontrivial size: fig03_prime_space - 92448 bytes
+[OK] Figure SVG exists: fig03_prime_space
+[OK] Figure SVG nontrivial size: fig03_prime_space - 64730 bytes
+[OK] Figure PNG exists: fig04_repository
+[OK] Figure PNG nontrivial size: fig04_repository - 124374 bytes
+[OK] Figure SVG exists: fig04_repository
+[OK] Figure SVG nontrivial size: fig04_repository - 58988 bytes
+[OK] Figure PNG exists: fig05_construction
+[OK] Figure PNG nontrivial size: fig05_construction - 102288 bytes
+[OK] Figure SVG exists: fig05_construction
+[OK] Figure SVG nontrivial size: fig05_construction - 45529 bytes
+[OK] Figure PNG exists: fig06_observatory
+[OK] Figure PNG nontrivial size: fig06_observatory - 121719 bytes
+[OK] Figure SVG exists: fig06_observatory
+[OK] Figure SVG nontrivial size: fig06_observatory - 59507 bytes
+[OK] Figure PNG exists: fig07_software
+[OK] Figure PNG nontrivial size: fig07_software - 116539 bytes
+[OK] Figure SVG exists: fig07_software
+[OK] Figure SVG nontrivial size: fig07_software - 42095 bytes
+[OK] Figure PNG exists: fig08_validation
+[OK] Figure PNG nontrivial size: fig08_validation - 130005 bytes
+[OK] Figure SVG exists: fig08_validation
+[OK] Figure SVG nontrivial size: fig08_validation - 46880 bytes
+[OK] Figure PNG exists: fig09_growth
+[OK] Figure PNG nontrivial size: fig09_growth - 113447 bytes
+[OK] Figure SVG exists: fig09_growth
+[OK] Figure SVG nontrivial size: fig09_growth - 42946 bytes
+[OK] Figure PNG exists: fig10_ecosystem
+[OK] Figure PNG nontrivial size: fig10_ecosystem - 119350 bytes
+[OK] Figure SVG exists: fig10_ecosystem
+[OK] Figure SVG nontrivial size: fig10_ecosystem - 59554 bytes
+[OK] Table CSV exists: table01_reference_implementation
+[OK] Table MD exists: table01_reference_implementation
+[OK] Table DOCX exists: table01_reference_implementation
+[OK] Table CSV exists: table02_design_principles
+[OK] Table MD exists: table02_design_principles
+[OK] Table DOCX exists: table02_design_principles
+[OK] Table CSV exists: table03_architectural_components
+[OK] Table MD exists: table03_architectural_components
+[OK] Table DOCX exists: table03_architectural_components
+[OK] Table CSV exists: table04_repository_statistics
+[OK] Table MD exists: table04_repository_statistics
+[OK] Table DOCX exists: table04_repository_statistics
+[OK] Table CSV exists: table05_software_modules
+[OK] Table MD exists: table05_software_modules
+[OK] Table DOCX exists: table05_software_modules
+[OK] Table CSV exists: table06_reproducibility_features
+[OK] Table MD exists: table06_reproducibility_features
+[OK] Table DOCX exists: table06_reproducibility_features
+[OK] Integrated Draft 2 DOCX exists
+[OK] Integrated Draft 2 DOCX nontrivial size - 1002265 bytes
+[OK] Manuscript sections present - 13 sections configured
+============================================================
+Overall Status: PASSED
+============================================================

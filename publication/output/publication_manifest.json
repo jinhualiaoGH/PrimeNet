@@ -1,0 +1,46 @@
+{
+  "publisher_version": "2.3.0",
+  "generated_utc": "2026-07-18T06:30:53Z",
+  "title": "PrimeNet: An Observatory for Prime Information Structures",
+  "author": "Jinhua Liao",
+  "stats_source": "C:\\PrimeNet\\catalog\\repository_summary.json",
+  "performance_source": "unavailable",
+  "repository_interval": "unavailable",
+  "verified_prime_numbers": "unavailable",
+  "sections": [
+    "1. Introduction",
+    "2. Design Philosophy",
+    "3. Prime Space",
+    "4. Repository Architecture",
+    "5. Repository Construction and Verification",
+    "6. Observatory Framework",
+    "7. Products and Atlases",
+    "8. Software Architecture",
+    "9. Reproducibility and Publication Support",
+    "10. Architectural Validation",
+    "11. Discussion",
+    "12. Future Directions",
+    "13. Conclusion"
+  ],
+  "figures": [
+    "fig01_evolution",
+    "fig02_architecture",
+    "fig03_prime_space",
+    "fig04_repository",
+    "fig05_construction",
+    "fig06_observatory",
+    "fig07_software",
+    "fig08_validation",
+    "fig09_growth",
+    "fig10_ecosystem"
+  ],
+  "tables": [
+    "table01_reference_implementation",
+    "table02_design_principles",
+    "table03_architectural_components",
+    "table04_repository_statistics",
+    "table05_software_modules",
+    "table06_reproducibility_features"
+  ],
+  "review_status": "PASSED"
+}

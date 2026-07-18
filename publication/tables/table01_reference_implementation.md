@@ -1,0 +1,13 @@
+| Characteristic | Reference Implementation |
+| --- | --- |
+| Repository interval | unavailable |
+| Verified prime numbers | unavailable |
+| Largest stored prime | unavailable |
+| Repository segments | unavailable |
+| Segment size | unavailable |
+| Repository verification | unavailable |
+| Repository construction | Deterministic |
+| Prime Space | Implemented |
+| Observatory Framework | Implemented |
+| Product Framework | Implemented |
+| Registry Services | Implemented |
