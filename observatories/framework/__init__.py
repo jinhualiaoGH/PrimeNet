@@ -5,6 +5,7 @@ from .observation_document import (
     SOFTWARE_NAME,
     ObservationDocument,
 )
+from .reader import ObservationReader
 from .serializer import ObservationSerializer
 from .writer import (
     DEFAULT_FILENAME,
@@ -18,6 +19,7 @@ __all__ = [
     "DOCUMENT_SCHEMA_VERSION",
     "Observation",
     "ObservationDocument",
+    "ObservationReader",
     "ObservationSerializer",
     "ObservationWriter",
     "ObservationWriteResult",
