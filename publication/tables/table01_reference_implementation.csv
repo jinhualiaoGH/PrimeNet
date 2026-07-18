@@ -1,10 +1,10 @@
 Characteristic,Reference Implementation
-Repository interval,unavailable
-Verified prime numbers,unavailable
-Largest stored prime,unavailable
-Repository segments,unavailable
-Segment size,unavailable
-Repository verification,unavailable
+Repository interval,"1 <= n <= 3,000,000,000,000"
+Verified prime numbers,"108,340,298,703"
+Largest stored prime,"2,999,999,999,933"
+Repository segments,300
+Segment size,"10,000,000,000 integers"
+Repository verification,300/300 passed; SHA-256 certified
 Repository construction,Deterministic
 Prime Space,Implemented
 Observatory Framework,Implemented

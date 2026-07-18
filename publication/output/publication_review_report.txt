@@ -30,9 +30,9 @@ PrimeNet Publication Verification v2.3
 [OK] Figure SVG exists: fig07_software
 [OK] Figure SVG nontrivial size: fig07_software - 42095 bytes
 [OK] Figure PNG exists: fig08_validation
-[OK] Figure PNG nontrivial size: fig08_validation - 130005 bytes
+[OK] Figure PNG nontrivial size: fig08_validation - 145434 bytes
 [OK] Figure SVG exists: fig08_validation
-[OK] Figure SVG nontrivial size: fig08_validation - 46880 bytes
+[OK] Figure SVG nontrivial size: fig08_validation - 56949 bytes
 [OK] Figure PNG exists: fig09_growth
 [OK] Figure PNG nontrivial size: fig09_growth - 113447 bytes
 [OK] Figure SVG exists: fig09_growth
@@ -59,8 +59,11 @@ PrimeNet Publication Verification v2.3
 [OK] Table CSV exists: table06_reproducibility_features
 [OK] Table MD exists: table06_reproducibility_features
 [OK] Table DOCX exists: table06_reproducibility_features
+[OK] Table CSV exists: table07_observational_performance
+[OK] Table MD exists: table07_observational_performance
+[OK] Table DOCX exists: table07_observational_performance
 [OK] Integrated Draft 2 DOCX exists
-[OK] Integrated Draft 2 DOCX nontrivial size - 1002265 bytes
+[OK] Integrated Draft 2 DOCX nontrivial size - 1018699 bytes
 [OK] Manuscript sections present - 13 sections configured
 ============================================================
 Overall Status: PASSED

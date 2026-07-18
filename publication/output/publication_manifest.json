@@ -1,12 +1,16 @@
 {
-  "publisher_version": "2.3.0",
-  "generated_utc": "2026-07-18T06:30:53Z",
+  "publisher_version": "2.3.1",
+  "generated_utc": "2026-07-18T07:28:33Z",
   "title": "PrimeNet: An Observatory for Prime Information Structures",
   "author": "Jinhua Liao",
-  "stats_source": "C:\\PrimeNet\\catalog\\repository_summary.json",
-  "performance_source": "unavailable",
-  "repository_interval": "unavailable",
-  "verified_prime_numbers": "unavailable",
+  "stats_source": "E:\\PrimeNet\\Repository\\metadata\\repository_statistics.json",
+  "performance_source": "E:\\PrimeNet\\Repository\\observations\\twin_primes\\twin_prime_performance_analysis.json",
+  "repository_interval": "1 <= n <= 3,000,000,000,000",
+  "verified_prime_numbers": "108,340,298,703",
+  "largest_stored_prime": "2,999,999,999,933",
+  "repository_segments": "300",
+  "segment_size": "10,000,000,000 integers",
+  "repository_release_version": "2.0.0",
   "sections": [
     "1. Introduction",
     "2. Design Philosophy",
@@ -40,7 +44,8 @@
     "table03_architectural_components",
     "table04_repository_statistics",
     "table05_software_modules",
-    "table06_reproducibility_features"
+    "table06_reproducibility_features",
+    "table07_observational_performance"
   ],
   "review_status": "PASSED"
 }
