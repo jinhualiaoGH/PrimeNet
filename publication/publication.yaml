@@ -1,10 +1,10 @@
-# PrimeNet Publisher v2.3 configuration
+# PrimeNet Publisher v2.4 configuration
 project: PrimeNet
 title: "PrimeNet: An Observatory for Prime Information Structures"
 short_title: "PrimeNet Architecture"
 author: "Jinhua Liao"
 affiliation: "Independent Researcher"
-version: "Publication Draft v0.5"
+version: "Publication Draft v2.4"
 date: "2026"
 
 paths:
@@ -37,3 +37,8 @@ repository:
     - "../catalog/database_summary.json"
     - "../metadata/repository_verification_summary.json"
     - "data/implementation_stats.json"
+
+theory_validation:
+  summary: "E:/PrimeNet/Repository/observations/theory_validation/theory_validation_summary.json"
+  partitions: "E:/PrimeNet/Repository/observations/theory_validation/theory_validation_partition_data.csv"
+  figure_source: "../paper/output/figures"

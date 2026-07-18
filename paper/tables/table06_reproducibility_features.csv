@@ -1,8 +1,0 @@
-Feature,Purpose
-Deterministic construction,Repeatable repository generation
-Independent verification,Validate repository integrity
-Structured metadata,Preserve repository and product context
-Observation sessions,Preserve execution provenance
-Persistent products,Enable reuse without recomputation
-Registry services,Support discoverability and consistency
-Publication manifest,Preserve publication build provenance

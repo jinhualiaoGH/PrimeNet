@@ -1,0 +1,7 @@
+{
+  "package": "PrimeNet v1.0 Maintenance Cleanup \u2014 Release Aware",
+  "version": "1.2.0",
+  "release_root": "C:\\PrimeNet\\release\\v1.0",
+  "protected_release_artifact": "PrimeNet_Publisher_v2_4_3_Figure1_Final_Real.zip",
+  "default_mode": "dry-run"
+}

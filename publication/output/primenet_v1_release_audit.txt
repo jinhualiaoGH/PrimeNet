@@ -1,0 +1,45 @@
+PrimeNet Release Audit
+==============================================================================
+Auditor version : 1.0.0
+Release target  : PrimeNet v1.0 Publication Candidate RC1
+Publisher target: 2.4.2
+PrimeNet root   : C:\PrimeNet
+Generated UTC   : 2026-07-18T16:22:56.076572+00:00
+==============================================================================
+PrimeNet root                                       PASSED   C:\PrimeNet
+Publication source                                  PASSED   C:\PrimeNet\publication\publisher
+Publisher version                                   PASSED   found '2.4.2'; expected '2.4.2'
+Publication configuration                           PASSED   C:\PrimeNet\publication\publication.yaml (1,122 bytes)
+Publication builder                                 PASSED   C:\PrimeNet\publication\build_publication.py (70 bytes)
+Publication verifier                                PASSED   C:\PrimeNet\publication\verify_publication.py (481 bytes)
+Repository summary                                  PASSED   C:\PrimeNet\catalog\repository_summary.json
+Repository inventory                                PASSED   C:\PrimeNet\catalog\repository_inventory.json
+Theory-validation summary                           PASSED   E:\PrimeNet\Repository\observations\theory_validation\theory_validation_summary.json
+Theory-validation partitions                        PASSED   E:\PrimeNet\Repository\observations\theory_validation\theory_validation_partition_data.csv (21 columns)
+Theory figure fig11_prime_count_comparison PNG      PASSED   C:\PrimeNet\publication\figures\fig11_prime_count_comparison.png (232,943 bytes)
+Theory figure fig11_prime_count_comparison SVG      PASSED   C:\PrimeNet\publication\figures\fig11_prime_count_comparison.svg (55,862 bytes)
+Theory figure fig12_prime_count_relative_error PNG  PASSED   C:\PrimeNet\publication\figures\fig12_prime_count_relative_error.png (219,439 bytes)
+Theory figure fig12_prime_count_relative_error SVG  PASSED   C:\PrimeNet\publication\figures\fig12_prime_count_relative_error.svg (66,693 bytes)
+Theory figure fig13_mean_gap_validation PNG         PASSED   C:\PrimeNet\publication\figures\fig13_mean_gap_validation.png (156,491 bytes)
+Theory figure fig13_mean_gap_validation SVG         PASSED   C:\PrimeNet\publication\figures\fig13_mean_gap_validation.svg (48,468 bytes)
+Theory figure fig13b_mean_gap_ratio PNG             PASSED   C:\PrimeNet\publication\figures\fig13b_mean_gap_ratio.png (223,867 bytes)
+Theory figure fig13b_mean_gap_ratio SVG             PASSED   C:\PrimeNet\publication\figures\fig13b_mean_gap_ratio.svg (69,076 bytes)
+Theory figure fig14_twin_prime_validation PNG       PASSED   C:\PrimeNet\publication\figures\fig14_twin_prime_validation.png (215,274 bytes)
+Theory figure fig14_twin_prime_validation SVG       PASSED   C:\PrimeNet\publication\figures\fig14_twin_prime_validation.svg (61,518 bytes)
+Theory figure fig14b_twin_prime_relative_error PNG  PASSED   C:\PrimeNet\publication\figures\fig14b_twin_prime_relative_error.png (185,701 bytes)
+Theory figure fig14b_twin_prime_relative_error SVG  PASSED   C:\PrimeNet\publication\figures\fig14b_twin_prime_relative_error.svg (46,499 bytes)
+Publication DOCX                                    PASSED   C:\PrimeNet\publication\output\PrimeNet_Architecture_Publication_Draft_v2_4.docx (2,391,467 bytes)
+Publication review                                  PASSED   C:\PrimeNet\publication\output\publication_review_report.txt
+Publication manifest                                PASSED   C:\PrimeNet\publication\output\publication_manifest.json
+Documentation README.md                             PASSED   C:\PrimeNet\README.md (443 bytes)
+Documentation ARCHITECTURE.md                       PASSED   C:\PrimeNet\ARCHITECTURE.md (15,470 bytes)
+Documentation CHANGELOG.md                          PASSED   C:\PrimeNet\CHANGELOG.md (4,051 bytes)
+Documentation CITATION.cff                          WARNING  C:\PrimeNet\CITATION.cff
+Documentation VERSION                               PASSED   C:\PrimeNet\VERSION (7 bytes)
+Documentation LICENSE                               WARNING  C:\PrimeNet\LICENSE
+Git working tree                                    PASSED   156 changed/untracked path(s)
+==============================================================================
+Passed   : 30
+Warnings : 2
+Failed   : 0
+Overall Status: CERTIFIED

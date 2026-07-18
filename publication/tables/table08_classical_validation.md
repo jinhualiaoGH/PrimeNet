@@ -1,0 +1,7 @@
+| Quantity | Exact observation | Classical reference | Endpoint relative error |
+| --- | --- | --- | --- |
+| Prime count pi(3,000,000,000,000) | 108,340,298,703 | x/log(x) = 104,421,798,835.763 | -3.616844253% |
+| Prime count | 108,340,298,703 | Li(x) = 108,340,379,630.280 | 0.000074697% |
+| Prime count | 108,340,298,703 | R(x) = 108,340,313,798.635 | 0.000013934% |
+| Mean outgoing gap | 28.728551671208 | log(midpoint) = 28.727965347505 | 0.002040951% |
+| Cumulative twin-prime events | 5,173,760,785 | Hardy–Littlewood = 5,173,795,178.790 | 0.000664773% |

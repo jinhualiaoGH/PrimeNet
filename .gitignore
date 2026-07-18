@@ -94,3 +94,11 @@ paper/**/*.synctex.gz
 
 # Packaged archives
 *.zip
+
+# PrimeNet local and regenerable artifacts
+maintenance/reports/
+archive/development_packages/
+archive/installation_backups/
+backup/
+cache/
+tmp/
