@@ -1,0 +1,18 @@
+id: OBS-GEOMETRY
+name: Geometry Observatory
+version: 1.0.0
+category: geometry
+status: candidate
+entrypoint: observatories.geometry.runner
+inputs:
+  - validated Information Observatory output
+products:
+  - state_distance_matrix.csv
+  - nearest_neighbors.csv
+  - cluster_assignments.csv
+  - embedding_2d.csv
+  - embedding_3d.csv
+  - geometry_metrics.json
+  - geometry_summary.json
+  - geometry_validation.json
+  - geometry_observation.json

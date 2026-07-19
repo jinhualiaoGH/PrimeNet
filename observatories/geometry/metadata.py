@@ -1,0 +1,8 @@
+PROJECT = "PrimeNet"
+OBSERVATORY_ID = "OBS-GEOMETRY"
+OBSERVATORY_NAME = "Geometry Observatory"
+OBSERVATORY_CATEGORY = "geometry"
+VERSION = "1.0.0"
+ALGORITHM = "information-profile-state-geometry"
+ALGORITHM_VERSION = "1.0.0"
+COORDINATE_SYSTEM = "prime_index"
