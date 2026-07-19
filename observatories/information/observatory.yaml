@@ -1,0 +1,25 @@
+id: OBS-INFORMATION
+name: Information Observatory
+version: 1.0.0
+category: information
+status: candidate
+entrypoint: observatories.information.runner
+summary: Information-theoretic measurements derived from validated transition observations.
+inputs:
+  - transition_counts.csv
+  - transition_summary.json
+products:
+  - information_metrics.json
+  - information_distributions.csv
+  - pointwise_mutual_information.csv
+  - information_summary.json
+  - information_validation.json
+  - information_observation.json
+  - sha256_manifest.json
+instruments:
+  - IO-001
+  - IO-002
+  - IO-003
+  - IO-004
+  - IO-005
+  - IO-006
