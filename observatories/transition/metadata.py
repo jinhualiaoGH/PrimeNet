@@ -1,27 +1,11 @@
-"""
-PrimeNet Transition Observatory Metadata
-"""
+"""Canonical identity for PrimeNet Transition Observatory v1.0."""
 
+PROJECT = "PrimeNet"
 OBSERVATORY_ID = "OBS-TRANSITION"
-
-NAME = "Transition Observatory"
-
+OBSERVATORY_NAME = "Transition Observatory"
+OBSERVATORY_CATEGORY = "transition"
 VERSION = "1.0.0"
-
-CATEGORY = "transition"
-
-AUTHOR = "PrimeNet"
-
-DESCRIPTION = (
-    "Observatory for transition-based analysis of prime gap dynamics, "
-    "including transition matrices, stationary distributions, entropy "
-    "rate, spectral properties, mixing time, and related observables."
-)
-
-SUPPORTED_INSTRUMENTS = [
-    "TransitionMatrixInstrument",
-    "StationaryDistributionInstrument",
-    "EntropyRateInstrument",
-    "SpectralGapInstrument",
-    "MixingTimeInstrument",
-]
+ALGORITHM = "first_order_gap_transition_census"
+ALGORITHM_VERSION = "1.0.0"
+COORDINATE_SYSTEM = "prime_index"
+GAP_OWNERSHIP = "left-owned"
