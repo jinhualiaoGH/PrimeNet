@@ -1,0 +1,16 @@
+{
+  "name": "architecture",
+  "title": "PrimeNet: An Observatory for Prime Information Structures",
+  "version": "0.3.0",
+  "description": "Architecture-paper plugin with typed evidence and deterministic table generation.",
+  "required_evidence": [
+    "architecture.repository.summary_1t"
+  ],
+  "stages": [
+    "evidence",
+    "validate",
+    "tables",
+    "plan",
+    "summarize"
+  ]
+}
