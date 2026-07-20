@@ -1,0 +1,7 @@
+{
+  "id": "architecture.repository",
+  "title": "Canonical Repository Baseline",
+  "order": 10,
+  "level": 1,
+  "template": "sections/010_repository.md.tmpl"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "architecture.repository.overview",
+  "title": "PrimeNet 1T Reference Repository",
+  "caption": "Canonical reference statistics for the PrimeNet repository from 1 through 10^12.",
+  "evidence_id": "architecture.repository.summary_1t",
+  "columns": [
+    {"key": "coordinate_upper_bound", "title": "Upper bound", "format": "integer"},
+    {"key": "prime_count", "title": "Prime count", "format": "integer"},
+    {"key": "partition_count", "title": "Partitions", "format": "integer"},
+    {"key": "first_prime", "title": "First prime", "format": "integer"},
+    {"key": "last_prime", "title": "Last prime", "format": "integer"},
+    {"key": "prime_dtype", "title": "Storage dtype", "format": "text"}
+  ]
+}

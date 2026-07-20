@@ -1,0 +1,18 @@
+{
+  "id": "architecture.repository.scale",
+  "title": "PrimeNet 1T Reference Repository Scale",
+  "caption": "Logarithmic comparison of the coordinate upper bound, enumerated prime count, and canonical partition count.",
+  "evidence_id": "architecture.repository.summary_1t",
+  "kind": "bar",
+  "orientation": "horizontal",
+  "value_scale": "log",
+  "x_label": "Count (log scale)",
+  "series": [
+    {"key": "coordinate_upper_bound", "label": "Coordinate upper bound"},
+    {"key": "prime_count", "label": "Enumerated primes"},
+    {"key": "partition_count", "label": "Canonical partitions"}
+  ],
+  "width": 8.5,
+  "height": 4.8,
+  "dpi": 180
+}
