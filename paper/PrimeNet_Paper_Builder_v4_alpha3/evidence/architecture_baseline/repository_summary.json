@@ -1,0 +1,8 @@
+{
+  "coordinate_upper_bound": 1000000000000,
+  "prime_count": 37607912018,
+  "partition_count": 100,
+  "first_prime": 2,
+  "last_prime": 999999999989,
+  "prime_dtype": "uint64"
+}

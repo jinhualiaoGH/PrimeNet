@@ -1,0 +1,13 @@
+PrimeNet Paper Builder v4.0-alpha.3
+Internal validation
+========================================
+compileall                         PASSED
+pip install -e ".[dev]"           PASSED
+pytest                             15 PASSED
+py -m builder doctor              READY
+py -m builder evidence            READY (1 package, 1 record)
+py -m builder --list-papers       PASSED
+py -m builder --paper architecture PASSED
+
+Validated on Python 3.13.5 in the build environment.
+Windows 11 / Python 3.14 integration validation is requested from the user.
