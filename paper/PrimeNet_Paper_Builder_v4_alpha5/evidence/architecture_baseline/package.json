@@ -1,0 +1,23 @@
+{
+  "package_id": "architecture_baseline",
+  "version": "1.0.0",
+  "description": "Canonical 1T reference repository statistics used by the architecture-paper plugin.",
+  "evidence": [
+    {
+      "id": "architecture.repository.summary_1t",
+      "kind": "metric",
+      "title": "PrimeNet 1T Repository Summary",
+      "version": "1.0.0",
+      "description": "Reference statistics for the canonical PrimeNet repository from 1 through 10^12.",
+      "source": {
+        "path": "repository_summary.json",
+        "media_type": "application/json",
+        "sha256": "d983906b34c72f5ca6976e43dd08ad0f0e56e52b4c73499ec7573a7f79aa3232"
+      },
+      "metadata": {
+        "coordinate_system": "integer range",
+        "status": "canonical reference"
+      }
+    }
+  ]
+}
