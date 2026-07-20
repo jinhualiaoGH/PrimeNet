@@ -1,0 +1,12 @@
+{
+  "name": "architecture",
+  "title": "PrimeNet: An Observatory for Prime Information Structures",
+  "version": "0.1.0",
+  "description": "Initial architecture-paper plugin used to validate the v4 framework foundation.",
+  "required_evidence": [],
+  "stages": [
+    "validate",
+    "plan",
+    "summarize"
+  ]
+}

@@ -1,0 +1,18 @@
+PrimeNet Paper Builder v4.0-alpha.2
+Internal validation: PASSED
+
+Environment
+- Python 3.13.5
+- Clean virtual environment
+- Editable installation
+
+Results
+- compileall: PASSED
+- pip install -e ".[dev]": PASSED
+- pytest: 8 PASSED
+- py -m builder doctor: READY
+- py -m builder --list-papers: PASSED
+- py -m builder --paper architecture: PASSED
+
+Known scope limitation
+- DOCX/PDF generation is not part of alpha.2.
